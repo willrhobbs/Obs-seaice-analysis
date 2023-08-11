@@ -8,7 +8,7 @@ begin
   yr     = 2023
   clst   = 1979  ;climatology start date
   clen   = 2008  ;climatology end
-  seas   = [/"AMJ",4,3/] ;season,first month index (1-12),number of months in season)
+  seas   = [/"AMJJ",4,4/] ;season,first month index (1-12),number of months in season)
  
 
   latmin = -90.
@@ -23,7 +23,7 @@ begin
   fili   = src+"_sfcflux_monthly_SH_"+(/"1979-2022","2023"/)+".nc"
 
   
-  dirp   = "~/plots/ANTARCTIC/"
+  dirp   = "plots/"
   filp   = src+"_sfcflux_"+seas[0]+"_"+yr+"_map"
   pType  = "ps"
 
@@ -171,7 +171,7 @@ begin
 
 
 
-  mres@cnMaxLevelValF       = 20.
+  mres@cnMaxLevelValF       = 40.
   mres@cnMinLevelValF       = -mres@cnMaxLevelValF
   mres@cnLevelSpacingF      = 2.
   resP@txString            := yr+" anom"

@@ -7,13 +7,13 @@
 begin
 
 
-  isAni  = True
+  isAni  = False
   isAnom = True   ;plot SIC as anom or abs value
-  latmax = -55.
-
+  latmax = -45.
+  latmin = -90.
 
   stdat  = 202303   ;start date (YYYYMM)  
-  endat  = 202306 ;;  ;end date (YYYYMM) 
+  endat  = 202307 ;;  ;end date (YYYYMM) 
   
   ;climatology start and end dates [2004-2018 is the ARGO climatology)
   clst   = 1979
@@ -23,7 +23,7 @@ begin
 ;Obs data ice data
   filoi = "~/data/NSIDC/raw/SH/monthly/seaice_conc_monthly_"+\
   array_append_record("sh_197811_202212_v04r00.nc",\
-  "icdr_sh_2023"+sprinti("%0.2i",ispan(1,6,1))+"_f18_v02r00.nc", 0)
+  "icdr_sh_2023"+sprinti("%0.2i",ispan(1,7,1))+"_f18_v02r00.nc", 0)
 
   oiNam = "cdr_seaice_conc_monthly"
 
@@ -39,7 +39,7 @@ begin
 
 
 ;plot file
-  dirp  = "~/plots/ANTARCTIC/NSIDC/"
+  dirp  = "plots/"
   filp  = "NSIDC_sic_"+asrc+"_psl_map_"+stdat+"-"+endat
   pType = "png"
   if (isAni) then
@@ -112,21 +112,23 @@ begin
   time := cd_calendar(fi[:]->time, -1)  
 
   dimz   := (/ dimsizes(time),\
-  getfilevardimsizes(fi[0],"latitude"),\
+  dimsizes(fi[0]->latitude({latmin:latmax})),\
   getfilevardimsizes(fi[0],"longitude")/)
   var     = new(dimz, float)
 
   st = 0
    
-  
+
+
   do i = 0, dimsizes(filoa)-1
 
     if (dimsizes(getfilevardimsizes(fi[i],oaNam)).eq.4) then
-      tmp := dim_max_n_Wrap(short2flt(fi[i]->$oaNam$),1)
+      tmp := dim_max_n_Wrap(short2flt(fi[i]->$oaNam$(:,:,{latmin:latmax},:)),1)
     else
-      tmp:= short2flt(fi[i]->$oaNam$)
+      tmp:= short2flt(fi[i]->$oaNam$(:,{latmin:latmax},:))
     end if
- 
+
+
     ntim                  = dimsizes(tmp(:,0,0))
     var(st:st+ntim-1,:,:) = tmp
     st                    = st+ntim

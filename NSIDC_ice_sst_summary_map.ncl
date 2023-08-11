@@ -6,12 +6,12 @@
 begin
 
 
-  isAni  = True
-  isAnom = False   ;plot SIC as anom or abs value
-  latmax = -50.
+  isAni  = False
+  isAnom = True   ;plot SST as anom or abs value
+  latmax = -45.
 
 
-  stdat  = 202301   ;start date (YYYYMM)  
+  stdat  = 202304   ;start date (YYYYMM)  
   endat  = 202307 ;;  ;end date (YYYYMM) 
   
   ;climatology start and end dates [2004-2018 is the ARGO climatology)
@@ -37,7 +37,7 @@ begin
 
 
 ;plot file
-  dirp  = "~/plots/ANTARCTIC/NSIDC/"
+  dirp  = "plots/"
   filp  = "NSIDC_sic_"+osrc+"_sst_map_"+stdat+"-"+endat
   pType = "png"
   if (isAni) then
