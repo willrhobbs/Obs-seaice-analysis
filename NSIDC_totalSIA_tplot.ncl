@@ -18,9 +18,9 @@ begin
   fili = "NSIDC_SH_totalSIA_monthly_"+(/"v04r00.nc","v02r00.nc"/)
   iNam = "cdr"
 
-  diro = "~/plots/ANTARCTIC/NSIDC/"
+  diro = "plots/"
   filo = "NSIDC_"+iNam+"_SIA_monthly_tplot"
-  if (month.ne."ALL")) then
+  if (month.ne."ALL") then
     filo = str_sub_str(filo,"monthly",month)
   end if
   oType = "ps"
@@ -43,7 +43,7 @@ begin
 
     SIA&time = SIA&time/100 ;convert to year
     SIA     = SIA - avg(SIA({clst:clen}))
-    sd      = stddev(SIA({clst:clen})
+    sd      = stddev(SIA({clst:clen}))
     SIA    := SIA({yrst:yren})
 
   else
