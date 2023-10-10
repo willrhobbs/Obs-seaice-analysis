@@ -18,7 +18,7 @@ begin
   oNam  = "sst"
   osrc  = "OISSTv2"
   diro  = "~/data/OISST/"
-  filo  = "OIv2_SST_SH_1982-2023.nc"
+  filo  = "OIv2_SST_1982-2023.nc"
 
 ;output
   dirp  = "plots/"

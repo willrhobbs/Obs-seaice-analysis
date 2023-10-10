@@ -19,7 +19,7 @@ begin
   
   ;time domain
   stdat  = 200401
-  endat  = 202308
+  endat  = 202309
   clst   = 2004
   clen   = 2018
 
@@ -28,9 +28,9 @@ begin
 
   ;input file 
   diri   = "~/data/RG_ARGO/"
-  var    = "Temperature";"Salinity";
+  var    = "Salinity";"Temperature";
   vNam    = "ARGO_"+str_upper(var)+"_ANOMALY"
-  fili   = "RG_ArgoClim_"+var+"_200401-202308.nc"
+  fili   = "RG_ArgoClim_"+var+"_200401-202309.nc"
 
   ;output file
   pType  = "ps"
