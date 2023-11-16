@@ -1,5 +1,5 @@
 
-;write total SIA from NSIDC SIC data
+;write total SIA and SIE from NSIDC SIC data
 
 begin
 
@@ -26,16 +26,23 @@ begin
   fili = systemfunc("ls "+diri+"seaice_conc_monthly_*sh_*_"+version+".nc")
   fi   = addfiles(fili,"r")
 
-;get SIA for each data source
+
+;grid cell area, use a data file or fixed 25 km^2 value
   if (isvar("Afil")) then
     fa = addfile(Afil, "r")
     A  = fa->$aNam$
     A := tofloat(A) * 1.e-12  ;convert from m^2 to million km^2
   else
-    A    = 25.^2 * 1.e-6 ;grid cell area (million km2)
+    A  = 25.^2 * 1.e-6 ;grid cell area (million km2)
   end if
 
-  aList = NewList("fifo")
+
+;read sic for each data source
+;calc SIA and and SIE
+
+  aList = NewList("fifo")  ;list for SIA
+  eList = NewList("fifo")  ;list for SIE
+
   nsrc  = dimsizes(src)
   do i = 0, nsrc-1
     
@@ -43,12 +50,23 @@ begin
     sic  := fi[:]->$iNam$
     sic  := byte2flt(sic)
     sic   = where(sic.lt.0..or.sic.gt.1., sic@_FillValue, sic)
+
+    ;calc SIA
     if (isvar("Afil")) then
-      sic   = sic * conform(sic,A,(/1,2/))
+      tmp  := sic * conform(sic,A,(/1,2/))
     else
-      sic   = sic * A
+      tmp  := sic * A
     end if
-    ListAppend(aList,dim_sum_n(sic,(/1,2/)))
+    ListAppend(aList,dim_sum_n(tmp,(/1,2/)))
+
+    ;calc SIE
+    sic   = where(sic.gt.0.15, 1., 0.)
+    if (isvar("Afil")) then
+      tmp  := sic * conform(sic,A,(/1,2/))
+    else
+      tmp  := sic * A
+    end if
+    ListAppend(eList,dim_sum_n(tmp,(/1,2/)))
 
   end do
   delete(sic)
@@ -72,9 +90,11 @@ begin
 
   do i = 0, nsrc-1
     aList[i] = aList[i](pq)
-    
+    eList[i] = eList[i](pq)
+
     if (.not.ismissing(ii(0))) then
       aList[i](ii) = aList[i]@_FillValue
+      eList[i](ii) = eList[i]@_FillValue
     end if
 
   end do
@@ -90,7 +110,7 @@ begin
   fo = addfile(diro+filo,"c")
 
   fAtt                     = True
-  fAtt@description         = "Total "+hemi+" sea ice area from NSIDC climate data record"
+  fAtt@description         = "Total "+hemi+" sea ice area and extent from NSIDC climate data record"
   fAtt@version             = version
   fAtt@temporal_resolution = tstep
   fAtt@time_period         = min(time)+"-"+max(time)
@@ -111,10 +131,15 @@ begin
 
   do i = 0, nsrc-1
    
-    filevardef(fo,src(i),"float","time")
-    filevarattdef(fo,src(i),vAtt)
-    fo->$src(i)$ = (/ aList[i] /)
+    vAtt@long_name  = str_sub_str( vAtt@long_name, "extent", "area")
+    filevardef(fo,"SIA_"+src(i),"float","time")
+    filevarattdef(fo,"SIA_"+src(i),vAtt)
+    fo->$("SIA_"+src(i))$ = (/ aList[i] /)
 
+    vAtt@long_name  = str_sub_str( vAtt@long_name, "area", "extent")
+    filevardef(fo,"SIE_"+src(i),"float","time")
+    filevarattdef(fo,"SIE_"+src(i),vAtt)
+    fo->$("SIE_"+src(i))$ = (/ eList[i] /)
   end do
 
 

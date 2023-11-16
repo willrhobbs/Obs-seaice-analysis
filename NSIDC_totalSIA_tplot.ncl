@@ -6,7 +6,7 @@ load "~/scripts/NCL/ncl_funcs.ncl"
 begin
 
   yrst = 1979
-  yren = 2023
+  yren = 2024
   clst = yrst  ;climatology end
   clen = 2008  ;climatology start
 
@@ -18,12 +18,13 @@ begin
   fili = "NSIDC_SH_totalSIA_monthly_"+(/"v04r00.nc","v02r00.nc"/)
   iNam = "cdr"
 
-  diro = "plots/"
+  diro = "~/Documents/Proposals/ARC_FT_2024/"  ;"plots/"
   filo = "NSIDC_"+iNam+"_SIA_monthly_tplot"
   if (month.ne."ALL") then
     filo = str_sub_str(filo,"monthly",month)
   end if
-  oType = "png"
+  oType = "X11";"png"
+
 
 
 ;*******************
@@ -77,19 +78,25 @@ begin
 
   res                       = True
   res@gsnMaximize           = True
-  res@vpHeightF             = 0.5
+  res@gsnDraw               = False
+  res@gsnFrame              = False
+  res@vpHeightF             = 0.25
   res@vpWidthF              = 1.
 
-  res@tiYAxisString         = "SIA anomaly (million km~S~2~N~)"
+  res@tiYAxisString         = "SIA (million km~S~2~N~)"
   res@gsnYRefLine           = 0.
-  res@xyLineThicknessF      = 2.5
+  res@xyLineThicknessF      = 3.
   res@gsnBelowYRefLineColor = "orange"
   res@gsnAboveYRefLineColor = "cyan"
  
-  res@gsnRightString        = "(clim = "+clst+"-"+clen+")"
+  res@gsnRightString        = "";"(clim = "+clst+"-"+clen+")"
 
 
   res@tiMainString          = ""
+
+
+
+
   if (month.ne."ALL") then
     aplot = gsn_csm_xy(wks,SIA&time,SIA,res)
   else
@@ -106,6 +113,24 @@ begin
 
     aplot = gsn_csm_xy(wks,ispan(1,dimsizes(SIA),1),SIA,res)
   end if
+
+
+sd_ts = SIA
+do m = 0,11
+sd_ts(m::12) = (/sd(m)/)
+end do
+
+
+;res@xyDashPattern = 1
+res@xyLineColor = "red"
+
+ delete([/res@gsnBelowYRefLineColor,  res@gsnAboveYRefLineColor/])
+oplot =  gsn_csm_xy(wks,ispan(1,dimsizes(SIA),1),(/2.*sd_ts,-2.*sd_ts/),res)
+overlay(aplot,oplot)
+draw(aplot)
+frame(wks)
+exit
+
 
 
 ;**************************

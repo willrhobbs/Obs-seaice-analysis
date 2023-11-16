@@ -7,11 +7,11 @@ begin
 
 
   isAni  = False
-  isAnom = True   ;plot SIC as anom or abs value
+  isAnom = False   ;plot SIC as anom or abs value
   latmax = -55.
 
-  stdat  = 202212   ;start date (YYYYMM)  
-  endat  = 202212 ;;  ;end date (YYYYMM) 
+  stdat  = 202302   ;start date (YYYYMM)  
+  endat  = 202302 ;;  ;end date (YYYYMM) 
   
   ;climatology start and end dates [2004-2018 is the ARGO climatology)
   clst   = 1979
@@ -20,15 +20,15 @@ begin
 
 ;Obs data
   filoi = "~/data/NSIDC/raw/SH/monthly/seaice_conc_monthly_"+\
-  array_append_record("sh_197811_202212_v04r00.nc",\
-  "icdr_sh_20230"+ispan(1,7,1)+"_f18_v02r00.nc",0)
+  array_append_record("sh_197811_202306_v04r00.nc",\
+  "icdr_sh_20230"+ispan(7,9,1)+"_f18_v02r00.nc",0)
 
   oiNam = "cdr_seaice_conc_monthly"
 
 
 
 ;plot file
-  dirp  = "~/plots/ANTARCTIC/NSIDC/"
+  dirp  = "~/Documents/Proposals/ARC_FT_2024/"
   filp  = "NSIDC_cdr_map_"+stdat+"-"+endat
   pType = "png"
   if (isAni) then
@@ -134,7 +134,7 @@ begin
     res@cnMinLevelValF         = 0.15
     res@cnLevelSpacingF        = 0.05
     cmap = read_colormap_file("WhiteBlue")    ; 256 x 4 float array
-    res@cnFillPalette = cmap(:161:-1,:) 
+    res@cnFillPalette = cmap(:131:-1,:) 
     osic(2,:,:,:) = osic(1,:,:,:)
     
   end if
@@ -177,7 +177,7 @@ begin
     ;month sea ice edge
     ires@cnLineColor = "black"
     iplot            = gsn_csm_contour(wks,sic(1,:,:) ,ires)
-    overlay(plt,iplot)
+   ; overlay(plt,iplot)
 
 
     return(plt)
