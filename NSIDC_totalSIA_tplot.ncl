@@ -16,14 +16,14 @@ begin
 
   diri = "~/data/NSIDC/"
   fili = "NSIDC_SH_totalSIA_monthly_"+(/"v04r00.nc","v02r00.nc"/)
-  iNam = "cdr"
+  iNam = "SIA_cdr"
 
-  diro = "~/Documents/Proposals/ARC_FT_2024/"  ;"plots/"
-  filo = "NSIDC_"+iNam+"_SIA_monthly_tplot"
+  diro = "plots/"
+  filo = "NSIDC_"+iNam+"_monthly_tplot"
   if (month.ne."ALL") then
     filo = str_sub_str(filo,"monthly",month)
   end if
-  oType = "X11";"png"
+  oType = "ps"
 
 
 
@@ -78,9 +78,9 @@ begin
 
   res                       = True
   res@gsnMaximize           = True
-  res@gsnDraw               = False
-  res@gsnFrame              = False
-  res@vpHeightF             = 0.25
+  res@gsnDraw               = True 
+  res@gsnFrame              = True
+  res@vpHeightF             = 0.5
   res@vpWidthF              = 1.
 
   res@tiYAxisString         = "SIA (million km~S~2~N~)"
@@ -114,22 +114,6 @@ begin
     aplot = gsn_csm_xy(wks,ispan(1,dimsizes(SIA),1),SIA,res)
   end if
 
-
-sd_ts = SIA
-do m = 0,11
-sd_ts(m::12) = (/sd(m)/)
-end do
-
-
-;res@xyDashPattern = 1
-res@xyLineColor = "red"
-
- delete([/res@gsnBelowYRefLineColor,  res@gsnAboveYRefLineColor/])
-oplot =  gsn_csm_xy(wks,ispan(1,dimsizes(SIA),1),(/2.*sd_ts,-2.*sd_ts/),res)
-overlay(aplot,oplot)
-draw(aplot)
-frame(wks)
-exit
 
 
 

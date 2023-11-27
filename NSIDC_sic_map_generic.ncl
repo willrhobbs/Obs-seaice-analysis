@@ -8,10 +8,10 @@ begin
 
   isAni  = False
   isAnom = False   ;plot SIC as anom or abs value
-  latmax = -55.
+  latmax = -54.
 
-  stdat  = 202302   ;start date (YYYYMM)  
-  endat  = 202302 ;;  ;end date (YYYYMM) 
+  stdat  = 202308   ;start date (YYYYMM)  
+  endat  = 202308 ;;  ;end date (YYYYMM) 
   
   ;climatology start and end dates [2004-2018 is the ARGO climatology)
   clst   = 1979
@@ -28,14 +28,13 @@ begin
 
 
 ;plot file
-  dirp  = "~/Documents/Proposals/ARC_FT_2024/"
+  dirp  = "plots/"
   filp  = "NSIDC_cdr_map_"+stdat+"-"+endat
   pType = "png"
   if (isAni) then
     dirp  = dirp+"ani/"
     filp  = filp+"_ani"
   end if
-
 
 
 ;********************
@@ -90,6 +89,10 @@ begin
   osic!1      = "time"
   osic&time   = time(st:en)
  
+;mask land flags
+  osic = where(osic.gt.1., osic@_FillValue, osic)
+
+
 
 ;***********************************
 ;plot set-up
@@ -134,7 +137,7 @@ begin
     res@cnMinLevelValF         = 0.15
     res@cnLevelSpacingF        = 0.05
     cmap = read_colormap_file("WhiteBlue")    ; 256 x 4 float array
-    res@cnFillPalette = cmap(:131:-1,:) 
+    res@cnFillPalette = cmap(:161:-1,:) ;cmap(:131:-1,:) 
     osic(2,:,:,:) = osic(1,:,:,:)
     
   end if
@@ -151,7 +154,7 @@ begin
   ires@trGridType            = "TriangularMesh"
   ires@cnLineLabelsOn        = False
   ires@cnInfoLabelOn         = False
-  ires@cnLineThicknessF      = 4.
+  ires@cnLineThicknessF      = 5.
   ires@cnLevelSelectionMode  = "ExplicitLevels"
   ires@cnLevels              = 0.15
   ires@gsnLeftString         = ""
@@ -170,7 +173,7 @@ begin
     plt = gsn_csm_contour_map_polar(wks,sic(2,:,:),res)
     
     ;climatological sea ice edge
-    ires@cnLineColor = "magenta"
+    ires@cnLineColor = "violetred3"
     iplot            = gsn_csm_contour(wks,sic(0,:,:) ,ires)
     overlay(plt,iplot)
 
