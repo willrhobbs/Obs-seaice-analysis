@@ -15,18 +15,18 @@ begin
   MAq    = 1;21     ;smoothing period (time step, days or months)
 
 
-
+  var  = "SIA"
   src = "cdr"
   diri = "~/data/NSIDC/"
   fili  = diri+"NSIDC_SH_totalSIA_"+tres+"_v0"+(/4,2/)+"r00.nc"
-  iNam  = src 
+  iNam  = var+"_"+src
 
 
   diro = "plots/"
   if (isDiff) then
-    filo = src+"_dSIAdt_"+tres+"_cycle_plot"
+    filo = src+"_d"+var+"dt_"+tres+"_cycle_plot"
   else
-    filo = src+"_SIA_"+tres+"_cycle_plot"
+    filo = src+"_"+var+"_"+tres+"_cycle_plot"
   end if
 
   oType = "ps"
