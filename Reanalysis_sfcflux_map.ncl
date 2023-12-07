@@ -8,7 +8,7 @@ begin
   yr     = 2023
   clst   = 1979  ;climatology start date
   clen   = 2008  ;climatology end
-  seas   = [/"ASO",8,3/] ;season,first month index (1-12),number of months in season)
+  seas   = [/"SON",9,3/] ;season,first month index (1-12),number of months in season)
  
 
   latmin = -90.
