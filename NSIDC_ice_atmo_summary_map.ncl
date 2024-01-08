@@ -13,7 +13,7 @@ begin
   latmin = -90.
 
   stdat  = 202301   ;start date (YYYYMM)  
-  endat  = 202311 ;;  ;end date (YYYYMM) 
+  endat  = 202312 ;;  ;end date (YYYYMM) 
   
   ;climatology start and end dates [2004-2018 is the ARGO climatology)
   clst   = 1979
@@ -33,7 +33,7 @@ begin
   asrc  = "ERA5"
   ;miust be a single file, to avoid short-to-float conversion inconsistencies with ERA data
   dira  = "~/data/REANALYSIS/"+asrc+"/"
-  filoa = asrc+"_msl_monthly_SH_"+(/"1979-2022.nc","2023.nc"/)
+  filoa = asrc+"_msl_monthly_SH_"+(/"1979-2023.nc"/)
 
 
 

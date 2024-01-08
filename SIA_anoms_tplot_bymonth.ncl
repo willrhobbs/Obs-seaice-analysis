@@ -1,5 +1,5 @@
 load "~/scripts/NCL/ncl_funcs.ncl"
-load "~/scripts/NCL/plot_funcs.ncl"
+
 
 
 
@@ -83,6 +83,8 @@ begin
   res@xyMonoDashPattern       = True
   res@xyLineColors            = read_colormap_file("srip_reanalysis") 
   
+
+
   res@xyExplicitLegendLabels  = monref
   res@lgLabelFontHeightF      = 0.01
   res@pmLegendHeightF         = 0.2
