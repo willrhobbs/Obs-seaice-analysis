@@ -17,7 +17,7 @@ begin
   
   ;time domain
   stdat  = 200401
-  endat  = 202311
+  endat  = 202312
   clst   = 2004
   clen   = 2018
 
@@ -119,7 +119,7 @@ begin
   res@cnLevelSelectionMode = "ManualLevels"
 
   if (var.eq."Temperature") then
-    res@cnMinLevelValF       = -1.
+    res@cnMinLevelValF       = -0.5
     res@cnFillPalette        = "cmocean_balance"
   else
     res@cnMinLevelValF       = -0.05
@@ -139,10 +139,13 @@ begin
   res@tiMainString         = var
 
 
+
+
   time     := anom&TIME
   anom&TIME = tdum
 
-
+  ;mask out near-zero anoms
+  anom      = where(abs(anom).lt.res@cnLevelSpacingF,anom@_FillValue, anom )
 
   plot =  gsn_csm_contour(wks,anom(PRESSURE|:,TIME|:), res)
 

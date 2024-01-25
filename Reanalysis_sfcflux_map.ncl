@@ -5,10 +5,10 @@
 
 begin
 
-  yr     = 2023
+  yr     = 2020
   clst   = 1979  ;climatology start date
   clen   = 2008  ;climatology end
-  seas   = [/"OND",10,3/] ;season,first month index (1-12),number of months in season)
+  seas   = [/"ONDJF",11,4/] ;season,first month index (1-12),number of months in season)
  
 
   latmin = -90.
@@ -25,7 +25,7 @@ begin
   
   dirp   = "plots/"
   filp   = src+"_sfcflux_"+seas[0]+"_"+yr+"_map"
-  pType  = "ps"
+  pType  = "png"
 
 
 
@@ -56,7 +56,7 @@ begin
   do i = 0, dimsizes(fili)-1
 
     ttmp := cd_calendar(fi[i]->time,-1)
-
+    ntim  = dimsizes(ttmp)
 
     do v = 0, 3
       if (any(getfilevarnames(fi[i]).eq."expver")) then
@@ -69,6 +69,9 @@ begin
  
       do y = ttmp(0)/100,max(ttmp)/100
         st             = ind(ttmp.eq.y*100+seas[1])
+        if (st+seas[2].gt.ntim) then
+          break
+        end if
         var(v,{y},:,:) = dim_avg_n(tmp(st:st+seas[2]-1,:,:),0)
       end do
     end do

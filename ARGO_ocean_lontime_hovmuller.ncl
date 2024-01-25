@@ -19,7 +19,7 @@ begin
   
   ;time domain
   stdat  = 200401
-  endat  = 202311
+  endat  = 202312
   clst   = 2004
   clen   = 2018
 
@@ -30,10 +30,10 @@ begin
   diri   = "~/data/RG_ARGO/"
 ;  var    = "Salinity";"Temperature";
   vNam    = "ARGO_"+str_upper(var)+"_ANOMALY"
-  fili   = "RG_ArgoClim_"+var+"_200401-202311.nc"
+  fili   = "RG_ArgoClim_"+var+"_200401-"+endat+".nc"
 
   ;output file
-  pType  = "ps"
+  pType  = "png"
   dirp   = "plots/"
   filp   = "ARGO_"+var+"_lontime_SOcean_"+zmin+"-"+zmax+"m"
 
@@ -175,7 +175,8 @@ begin
   time     := anom&TIME
   anom&TIME = tdum
 
-
+  ;mask out near-zero anoms
+  anom      = where(abs(anom).lt.res@cnLevelSpacingF,anom@_FillValue, anom )
 
   plot =  gsn_csm_contour(wks,anom(LONGITUDE|:,TIME|:), res)
 
