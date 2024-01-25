@@ -17,7 +17,7 @@ begin
   src  = (/"cdr",\\
   "nsidc_nt",\
   "nsidc_bt"/)
-  version = "v02r00"
+  ;version = "v02r00"
 
 
   pole = "SH"
@@ -33,8 +33,6 @@ begin
    ymax = -30.5
    nlat = 58
    fili = systemfunc("ls "+diri+"seaice_conc_monthly_*sh_*_"+version+".nc")
-;   fili = systemfunc("ls "+diri+"seaice_conc_monthly_icdr_sh_*_"+version+".nc")
-
  else
    ymin = 45.5
    ymax = 89.5
@@ -121,7 +119,8 @@ begin
 
 
   if (version.eq."v02r00") then
-    ftmp = addfile(diri+"seaice_conc_monthly_sh_197811_202212_v04r00.nc","r")
+    ftmp  = systemfunc("ls "+diri+"seaice_conc_monthly_sh_197811_??????_v04r00.nc")
+    ftmp := addfile(ftmp,"r")
     lat2d = ftmp->latitude
     lon2d = ftmp->longitude 
   else
