@@ -10,30 +10,34 @@ begin
 
   ;spatial domain
   latmax = -55.
-  latmin = -65.
+  latmin = -75.
   zmin   = 0.
-  zmax   = 600.
+  zmax   = 1000.
 
   
   ;time domain
   stdat  = 200401
-  endat  = 202312
+  endat  = 202401
   clst   = 2004
   clen   = 2018
 
-  refdats  = (/201608/)  ;highlight specific dates (YYYYMM format)
+  refdats  = (/201608,202302/)  ;highlight specific dates (YYYYMM format)
 
 
   ;input file 
-  diri   = "~/data/RG_ARGO/"
-;  var    = "Salinity";"Temperature";
-  vNam    = "ARGO_"+str_upper(var)+"_ANOMALY"
-  fili   = "RG_ArgoClim_"+var+"_200401-"+endat+".nc"
+src = "EN4"
+  diri   = "/g/data/jk72/wrh581/EN4/"   ;"~/data/RG_ARGO/"
+;  var    = "salinity";"temperature";
+  vNam    = var;"ARGO_"+str_upper(var)+"_ANOMALY"
+
+  fili = systemfunc("ls "+diri+"EN.4.2.2.?.analysis.l09.{"+str_join(yyyymm_time(stdat/100,endat/100,"integer"),",")+"}.nc 2>/dev/null")
+ 
+;"RG_ArgoClim_"+var+"_200401-"+endat+".nc"
 
   ;output file
   pType  = "png"
   dirp   = "plots/"
-  filp   = "ARGO_"+var+"_depthtime_SOcean_"+zmin+"-"+zmax+"m"
+  filp   = src+"_"+var+"_depthtime_SOcean_"+zmin+"-"+zmax+"m"
 
 
 ;*******************
@@ -41,18 +45,16 @@ begin
 ;*******************
 
 
-  fi    = addfile(diri+fili,"r")
-  time  = cd_calendar(fi->TIME,-1)
+  fi    = addfiles(fili,"r")
+  time  = cd_calendar(fi[:]->time,-1)
 
-
-
-  tmp  = fi->$vNam$(:,{zmin:zmax},{latmin:latmax},:)
+  tmp  = fi[:]->$vNam$(:,{zmin:zmax},{latmin:latmax},:)
 
 
   dlat = 1.
   dy   = yresCalc(dlat)
   dlon = 1.
-  dx   = xresCalc(dlon, tmp&LATITUDE)
+  dx   = xresCalc(dlon, tmp&$tmp!2$)
   A    = conform(tmp(0,0,:,:), dx*dy, 0)
   
   
@@ -66,7 +68,7 @@ begin
   st    = ind(time.eq.clst*100+1)
   en    = ind(time.eq.clen*100+12)
 
-  varmn&TIME := time
+  varmn&$varmn!0$ := time
   anom      = varmn({stdat:endat},:)
   sig       = anom                ;array for st. deviation
   nmon      = min((/12,dimsizes(anom(:,0))/))
@@ -110,7 +112,7 @@ begin
   ntim                     = dimsizes(anom(:,0))
   tdum                     = ispan(1,ntim,1)
   res@tmXBValues           = tdum(::step)
-  res@tmXBLabels           = anom&TIME(::step)/100
+  res@tmXBLabels           = anom&$anom!0$(::step)/100
   res@tmXBMinorValues      = tdum(::12)
 
   res@cnLinesOn            = False
@@ -118,7 +120,7 @@ begin
   res@cnFillMode           = "RasterFill"
   res@cnLevelSelectionMode = "ManualLevels"
 
-  if (var.eq."Temperature") then
+  if (any(var.eq.(/"temperature","Temperature"/))) then
     res@cnMinLevelValF       = -0.5
     res@cnFillPalette        = "cmocean_balance"
   else
@@ -141,13 +143,13 @@ begin
 
 
 
-  time     := anom&TIME
-  anom&TIME = tdum
+  time     := anom&$anom!0$
+  anom&$anom!0$ = tdum
 
   ;mask out near-zero anoms
   anom      = where(abs(anom).lt.res@cnLevelSpacingF,anom@_FillValue, anom )
 
-  plot =  gsn_csm_contour(wks,anom(PRESSURE|:,TIME|:), res)
+  plot =  gsn_csm_contour(wks,anom($anom!1$|:,$anom!0$|:), res)
 
 
 ;significance overlay respources
@@ -166,7 +168,7 @@ begin
 
   copy_VarCoords(anom,sig)
 
-  oplot = gsn_csm_contour(wks, sig(PRESSURE|:,TIME|:), res)
+  oplot = gsn_csm_contour(wks, sig($anom!1$|:,$anom!0$|:), res)
 
   overlay(plot,oplot)
 
