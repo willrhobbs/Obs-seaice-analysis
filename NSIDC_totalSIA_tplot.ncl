@@ -6,13 +6,13 @@ load "~/scripts/NCL/ncl_funcs.ncl"
 begin
 
   yrst = 1979
-  yren = 2024
+  yren = 2023
   clst = yrst  ;climatology end
   clen = 2008  ;climatology start
 
-  month = "ALL" ;month to plot (string). 
+  month = "ASO";"ALL" ;month to plot (string). 
             ;For all months, 'ALL', 
-            ;otherwies 3-letter season name  month (JAN, FEB)       ;
+            ;otherwies 3-letter season name (ASO) or  month (JAN, FEB)       ;
 
   diri = "~/data/NSIDC/"
   fili = "NSIDC_SH_totalSIA_monthly_"+(/"v04r00.nc","v02r00.nc"/)
@@ -23,7 +23,7 @@ begin
   if (month.ne."ALL") then
     filo = str_sub_str(filo,"monthly",month)
   end if
-  oType = "png"
+  oType = "ps"
 
 
 
@@ -47,7 +47,19 @@ begin
     sd      = stddev(SIA({clst:clen}))
     SIA    := SIA({yrst:yren})
 
-  else
+    SIA     = SIA - avg(SIA({clst:clen}))
+    sd      = stddev(SIA({clst:clen}))
+
+  elseif (any(seasref.eq.month)) then  ;seasonl mean
+
+    ;get 3-month seasons
+    SIA      = fi[:]->$iNam$({yr1*100+1:yr2*100+12})
+    SIA     := month_to_season(SIA, month)
+    SIA&time = SIA&time/100    ;convert time array to year
+
+    SIA     = SIA - avg(SIA({clst:clen}))
+    sd      = stddev(SIA({clst:clen}))
+  else 
 
     SIA = fi[:]->$iNam$({yr1*100+1:yr2*100+12})
 
@@ -67,8 +79,6 @@ begin
   
 
 
-
-
 ;*********************
 ;plot anoms
 ;*********************
@@ -78,26 +88,26 @@ begin
 
   res                       = True
   res@gsnMaximize           = True
-  res@gsnDraw               = True 
-  res@gsnFrame              = True
+  res@gsnDraw               = False 
+  res@gsnFrame              = False
   res@vpHeightF             = 0.5
   res@vpWidthF              = 1.
 
-  res@tiYAxisString         = "SIA (million km~S~2~N~)"
+  res@tiYAxisString         = "monthly sea ice area~C~anomalies (million km~S~2~N~)";"SIA (million km~S~2~N~)"
+
+
   res@gsnYRefLine           = 0.
   res@xyLineThicknessF      = 3.
   res@gsnBelowYRefLineColor = "orange"
   res@gsnAboveYRefLineColor = "cyan"
  
   res@gsnRightString        = "";"(clim = "+clst+"-"+clen+")"
-
-
   res@tiMainString          = ""
 
 
-
-
   if (month.ne."ALL") then
+    res@trXMaxF         = yren
+    res@trXMinF         = yrst
     aplot = gsn_csm_xy(wks,SIA&time,SIA,res)
   else
 
@@ -114,7 +124,30 @@ begin
     aplot = gsn_csm_xy(wks,ispan(1,dimsizes(SIA),1),SIA,res)
   end if
 
+;add polylines showing change in variance
 
+/;
+  breakyr = 2006
+  
+  resl                   = True
+  resl@gsLineThicknessF  = 3.
+  resl@gsLineDashPattern = 12
+  line                   = new(4, graphic)
+
+  xpts    = (/res@trXMinF,ind(SIA&time.eq.breakyr*100+12)/)
+  ypts    = 1.96 * stddev(SIA({:breakyr*100+12})) 
+  line(0) = gsn_add_polyline(wks,aplot,xpts, (/ypts,ypts/), resl)
+  line(1) = gsn_add_polyline(wks,aplot,xpts, -(/ypts,ypts/), resl)
+
+  resl@gsLineColor = "red"
+  xpts    = (/ind(SIA&time.eq.(breakyr+1)*100+1), res@trXMaxF/)
+  ypts    = 1.96 * stddev(SIA({(breakyr+1)*100+1:})) 
+  line(2) = gsn_add_polyline(wks,aplot,xpts, (/ypts,ypts/), resl)
+  line(3) = gsn_add_polyline(wks,aplot,xpts, -(/ypts,ypts/), resl)
+;/ 
+
+  draw(aplot)
+  frame(wks)
 
 
 ;**************************
@@ -143,8 +176,8 @@ begin
   lres@gsLineThicknessF  = 2.
   lres@gsLineDashPattern = 2
 
-  xpts = (/1,res@trXMaxF,res@trXMaxF,1/)
-  ypts = (/-1.96,-1.96,1.96,1.96/)
+  xpts := (/1,res@trXMaxF,res@trXMaxF,1/)
+  ypts := (/-1.96,-1.96,1.96,1.96/)
   line = gsn_add_polyline(wks, aplot, xpts, ypts, lres)
 
   draw(aplot)
