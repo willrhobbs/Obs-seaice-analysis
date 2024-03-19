@@ -6,11 +6,11 @@ load "~/scripts/NCL/ncl_funcs.ncl"
 begin
 
   yrst = 1979
-  yren = 2023
+  yren = 2024
   clst = yrst  ;climatology end
   clen = 2008  ;climatology start
 
-  month = "ASO";"ALL" ;month to plot (string). 
+  month = "ALL" ;month to plot (string). 
             ;For all months, 'ALL', 
             ;otherwies 3-letter season name (ASO) or  month (JAN, FEB)       ;
 

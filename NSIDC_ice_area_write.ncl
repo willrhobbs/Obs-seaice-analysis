@@ -14,12 +14,8 @@ begin
   yres  = 0.5 
 
 
-  src  = (/"cdr",\\
-  "nsidc_nt",\
-  "nsidc_bt"/)
+  src  = "cdr"
   ;version = "v02r00"
-
-
   pole = "SH"
   diri  = "~/data/NSIDC/raw/"+pole+"/monthly/"
   
@@ -79,7 +75,7 @@ begin
   print("reading ice data")
 
 
-  vNam = src(0)+"_seaice_conc_monthly"
+  vNam = src+"_seaice_conc_monthly"
   tmp = f[:]->$vNam$
 
 
@@ -89,22 +85,11 @@ begin
   ny   = dimz(1)
   nx   = dimz(2)
 
-  nsrc = dimsizes(src)
+ 
 
 
-  sic  = new((/nsrc,ntim,ny,nx/),"float")  ;new array for data
-
-  sic(0,:,:,:) = byte2flt(tmp)
-
-  ;remainding data sources...
-
-  do i = 1,nsrc-1
-    vNam         = src(i)+"_seaice_conc_monthly"
-    tmp          = f[:]->$vNam$
-    sic(i,:,:,:) =  byte2flt(tmp)
-  end do
-
-  delete(tmp)
+  sic  = new((/ntim,ny,nx/),"float")  ;new array for data
+  sic = byte2flt(tmp)
 
   sic   = where(sic.lt.0..or.sic.gt.1., sic@_FillValue, sic)
 
@@ -132,7 +117,7 @@ begin
   lon1d = ndtooned(lon2d)
   lon1d = where(lon1d.lt.0,360.+lon1d,lon1d)
 
-  sic1D = reshape(sic, (/nsrc,ntim,ny*nx/))
+  sic1D = reshape(sic, (/ntim,ny*nx/))
 
   
 ; Retrieve coordinates that are not missing.
@@ -152,7 +137,7 @@ begin
   gOpt@SrcGridLon     = lon1d(Index)
   gOptSrcGridType     = "unstructured"    
   gOpt@InterpMethod   = "bilinear"
-  gOpt@SrcMask2D      = where(ismissing(sic(0,0,:,:)),0,1) ;land mask
+  gOpt@SrcMask2D      = where(ismissing(sic(0,:,:)),0,1) ;land mask
 
 ;Destination grids
   nlat                = toint((ymax-ymin)/yres) + 1
@@ -161,9 +146,9 @@ begin
 
   
   if (isfilepresent(gOpt@WgtFileName)) then
-    ice3D = ESMF_regrid_with_weights(sic1D(:,:,Index),gOpt@WgtFileName,gOpt)
+    ice3D = ESMF_regrid_with_weights(sic1D(:,Index),gOpt@WgtFileName,gOpt)
   else
-    ice3D = ESMF_regrid(sic1D(:,:,Index), gOpt)
+    ice3D = ESMF_regrid(sic1D(:,Index), gOpt)
   end if
 
 
@@ -179,13 +164,26 @@ begin
 
 
 
-  ice3D = ice3D * dy * conform(ice3D, dx, 2)
 
+
+;integrate along meridians
+  A   := dy * conform(ice3D, dx, 1)
   delete([/dx,dy/])
-  
 
-    ;integrate along meridians
-  ice = dim_sum_n(ice3D, 2)
+
+
+  ;sea ice area
+  ice3D = where(ice3D.ge.0.15, ice3D, 0.)
+  SIA   = dim_sum_n(ice3D * A, 1)  
+  SIA@long_name = "sea ice area"
+  SIA@units     = "km**2"
+
+
+  ;sea ice extent
+  ice3D = where(ice3D.ge.0.15, 1., 0.)
+  SIE   = dim_sum_n(ice3D * A, 1) 
+  SIE@long_name = "sea ice extent"
+  SIE@units     = "km**2"
 
   ;use new 1-d lon array   
   lon = dble2flt(ice3D&lon)
@@ -193,8 +191,6 @@ begin
   delete([/ice3D, sic,sic1D,Index/])
 
 
-  ice@long_name = "sea ice area"
-  ice@units     = "km**2"
 
 
 
@@ -210,7 +206,8 @@ begin
 
   fAtt               = True
   fAtt@creation_date = systemfunc("date")
-  fAtt@description   = "NSIDC "+pole+" area"
+  fAtt@description   = "NSIDC "+pole+" area and extent"
+  fAtt@algorithm     = src
   fAtt@version       = version
   fAtt@script        = get_script_name()
   fileattdef(fo, fAtt)
@@ -227,15 +224,13 @@ begin
   fo->time = (/time/)
   fo->lon  = (/lon/)
 
+  filevardef(fo,"SIA",typeof(SIA), (/"time","lon"/))
+  filevarattdef(fo,"SIA",SIA)
+  fo->SIA  = (/SIA/)
 
-
-  do i = 0, nsrc-1
-    filevardef(fo,src(i),typeof(ice), (/"time","lon"/))
-    filevarattdef(fo,src(i),ice)
-
-    fo->$src(i)$  = (/ice(i,:,:)/)
-  end do
-
+  filevardef(fo,"SIE",typeof(SIA), (/"time","lon"/))
+  filevarattdef(fo,"SIE",SIE)
+  fo->SIE  = (/SIE/)
 
 
 end
