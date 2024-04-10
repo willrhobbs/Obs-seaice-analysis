@@ -72,20 +72,22 @@ begin
   delete(sic)
 
 ;time corrections  
+  time   = fi[:]->time
+
   if (tstep.eq."monthly") then 
-    time = cd_calendar(fi[:]->time,-1)
-    time@units = "YYYYMM"
+    YYYYMM = cd_calendar(time,-1)
+    YYYYMM@units = "YYYYMM"
     pq   = dim_pqsort(time,2)
     ;mask Dec 1987-Jan 1988
     ;should be missing but instead they're zero)
-    ii     = ind(time.eq.198712.or.time.eq.198801)
+    ii     = ind(YYYYMM.eq.198712.or.YYYYMM.eq.198801)
   else
-    time = cd_calendar(fi[:]->time,-2)
-    time@units = "YYYYMMDD"
+    YYYYMMDD = cd_calendar(time,-2)
+    YYYYMMDD@units = "YYYYMMDD"
     pq   = dim_pqsort(time,2)
     ;mask Dec 1987-Jan 1988
     ;should be missing but instead they're zero)
-    ii     = ind((time/100).eq.198712.or.(time/100).eq.198801)
+    ii     = ind((YYYYMMDD/100).eq.198712.or.(YYYYMMDD/100).eq.198801)
   end if
 
   do i = 0, nsrc-1
@@ -119,10 +121,19 @@ begin
   fileattdef(fo,fAtt)
 
   filedimdef(fo,"time",-1,True)
-  filevardef(fo,"time","integer","time")
+  filevardef(fo,"time",typeof(time),"time")
   filevarattdef(fo,"time",time)
   fo->time = (/ time /)
 
+  if  (tstep.eq."monthly") then
+    filevardef(fo,"YYYYMM","integer","time")
+    filevarattdef(fo,"YYYYMM",YYYYMM)
+    fo->YYYYMM = (/ YYYYMM /)
+  else
+    filevardef(fo,"YYYYMMDD","integer","time")
+    filevarattdef(fo,"YYYYMMDD",YYYYMMDD)
+    fo->YYYYMMDD = (/ YYYYMMDD /)
+  end if
 
   vAtt            = 1.
   vAtt@long_name  = "total sea ice area"

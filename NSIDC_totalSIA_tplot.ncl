@@ -47,6 +47,7 @@ begin
     sd      = stddev(SIA({clst:clen}))
     SIA    := SIA({yrst:yren})
 
+
     SIA     = SIA - avg(SIA({clst:clen}))
     sd      = stddev(SIA({clst:clen}))
 
@@ -76,7 +77,7 @@ begin
     SIA := SIA({yrst*100+1:yren*100+12})
   end if
 
-  
+ 
 
 
 ;*********************
