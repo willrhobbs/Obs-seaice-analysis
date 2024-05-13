@@ -19,7 +19,7 @@ begin
   
   ;time domain
   stdat  = 200401
-  endat  = 202312
+  endat  = 202404
   clst   = 2004
   clen   = 2018
 
