@@ -13,7 +13,7 @@ begin
   latmin = -90.
 
   stdat  = 202301   ;start date (YYYYMM)  
-  endat  = 202312 ;;  ;end date (YYYYMM) 
+  endat  = 202404 ;;  ;end date (YYYYMM) 
   
   ;climatology start and end dates [2004-2018 is the ARGO climatology)
   clst   = 1979
@@ -22,8 +22,8 @@ begin
 
 ;Obs data ice data
   filoi = "~/data/NSIDC/raw/SH/monthly/seaice_conc_monthly_"+\
-  array_append_record("sh_197811_202306_v04r00.nc",\
-  "icdr_sh_2023"+sprinti("%0.2i",ispan(7,endat%100,1))+"_f18_v02r00.nc", 0)
+  array_append_record("sh_197811_202312_v04r00.nc",\
+  "icdr_sh_2024"+sprinti("%0.2i",ispan(1,endat%100,1))+"_f18_v02r00.nc", 0)
 
   oiNam = "cdr_seaice_conc_monthly"
 
@@ -33,7 +33,7 @@ begin
   asrc  = "ERA5"
   ;miust be a single file, to avoid short-to-float conversion inconsistencies with ERA data
   dira  = "~/data/REANALYSIS/"+asrc+"/"
-  filoa = asrc+"_msl_monthly_SH_"+(/"1979-2023.nc"/)
+  filoa = asrc+"_msl_monthly_SH_"+(/"1979-2023","2024"/)+".nc"
 
 
 

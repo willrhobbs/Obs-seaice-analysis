@@ -7,7 +7,7 @@ begin
 
   yrst = 1979
   yren = 2024
-  clst = yrst  ;climatology end
+  clst = 1979  ;climatology end
   clen = 2008  ;climatology start
 
   month = "ALL" ;month to plot (string). 
@@ -23,7 +23,7 @@ begin
   if (month.ne."ALL") then
     filo = str_sub_str(filo,"monthly",month)
   end if
-  oType = "ps"
+  oType = "png"
 
 
 
@@ -35,49 +35,53 @@ begin
   yr2= max((/yren,clen/))
 
   fi = addfiles(diri+fili, "r")
-
+  YYYYMM = fi[:]->YYYYMM
 
   if (any(monref.eq.month)) then
     ;read individual month
     mInd = ind(monref.eq.month)+1
-    SIA  = fi[:]->$iNam$({yr1*100+mInd:yr2*100+mInd:12})
+    st   = ind(YYYYMM.eq.yr1*100+mInd)
+    en   = ind(YYYYMM.eq.yr2*100+mInd)
 
-    SIA&time = SIA&time/100 ;convert to year
+    SIA  = fi[:]->$iNam$(st:en:12)
+
+    SIA&time := YYYYMM(st:en:12)/100 ;convert to year
+    SIA       = SIA - avg(SIA({clst:clen}))
+    sd        = stddev(SIA({clst:clen}))
+    SIA      := SIA({yrst:yren})
+
+
     SIA     = SIA - avg(SIA({clst:clen}))
     sd      = stddev(SIA({clst:clen}))
-    SIA    := SIA({yrst:yren})
 
+  else
+    st       = min(ind(fi[:]->YYYYMM.ge.yr1*100+1))
+    en       = max(ind(fi[:]->YYYYMM.le.yr2*100+12))
+    SIA      = fi[:]->$iNam$(st:en)
+    SIA&time := YYYYMM(st:en) 
 
-    SIA     = SIA - avg(SIA({clst:clen}))
-    sd      = stddev(SIA({clst:clen}))
-
-  elseif (any(seasref.eq.month)) then  ;seasonl mean
+      ;convert time array to year
+    if (any(seasref.eq.month)) then  ;seasonl mean
 
     ;get 3-month seasons
-    SIA      = fi[:]->$iNam$({yr1*100+1:yr2*100+12})
-    SIA     := month_to_season(SIA, month)
-    SIA&time = SIA&time/100    ;convert time array to year
-
-    SIA     = SIA - avg(SIA({clst:clen}))
-    sd      = stddev(SIA({clst:clen}))
-  else 
-
-    SIA = fi[:]->$iNam$({yr1*100+1:yr2*100+12})
-
-
-    clim = new(12,typeof(SIA))
-    sd   = clim
+      SIA     := month_to_season(SIA, month)
+   
+      SIA     = SIA - avg(SIA({clst:clen}))
+      sd      = stddev(SIA({clst:clen}))
+    else 
+      clim = new(12,typeof(SIA))
+      sd   = clim
     
-    do m = 1, 12
-      clim(m-1) = avg(SIA({clst*100+m:clen*100+m:12})) 
-      sd(m-1)   = stddev(SIA({clst*100+m:clen*100+m:12})) 
-      SIA({yrst*100+m::12}) = SIA({yrst*100+m::12}) - clim(m-1)
-    end do
+      do m = 1, 12
+        clim(m-1) = avg(SIA({clst*100+m:clen*100+m:12})) 
+        sd(m-1)   = stddev(SIA({clst*100+m:clen*100+m:12})) 
+        SIA({yrst*100+m::12}) = SIA({yrst*100+m::12}) - clim(m-1)
+      end do
+    end if
 
-    SIA := SIA({yrst*100+1:yren*100+12})
+
+    SIA := SIA({yrst*100+1:yren*100+12} )
   end if
-
- 
 
 
 ;*********************
@@ -86,6 +90,7 @@ begin
 
 
   wks = gsn_open_wks(oType, diro+filo)
+
 
   res                       = True
   res@gsnMaximize           = True
@@ -110,6 +115,7 @@ begin
     res@trXMaxF         = yren
     res@trXMinF         = yrst
     aplot = gsn_csm_xy(wks,SIA&time,SIA,res)
+
   else
 
     ;for all months, need to get nicer tickmarks

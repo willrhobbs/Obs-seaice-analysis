@@ -5,10 +5,10 @@
 
 begin
 
-  yr     = 2020
+  yr     = 2024
   clst   = 1979  ;climatology start date
   clen   = 2008  ;climatology end
-  seas   = [/"ONDJF",11,4/] ;season,first month index (1-12),number of months in season)
+  seas   = [/"FMA",2,3/] ;season,first month index (1-12),number of months in season)
  
 
   latmin = -90.
@@ -20,7 +20,7 @@ begin
   iNam   = (/"slhf","sshf","str","ssr","net"/)
   sign   = (/1,1,1,1,1/)  ;sign convention (to ensure +ve is into ocean
 
-  fili   = src+"_sfcflux_monthly_SH_"+(/"1979-2023"/)+".nc"
+  fili   = src+"_sfcflux_monthly_SH_"+(/"1979-2023","2024"/)+".nc"
 
   
   dirp   = "plots/"
