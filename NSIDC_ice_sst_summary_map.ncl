@@ -8,11 +8,11 @@ begin
 
   isAni  = True
   isAnom = True   ;plot SST as anom or abs value
-  latmax = -45.
+  latmax = -40.
 
 
-  stdat  = 202301   ;start date (YYYYMM)  
-  endat  = 202404 ;;  ;end date (YYYYMM) 
+  stdat  = 202201   ;start date (YYYYMM)  
+  endat  = 202405 ;;  ;end date (YYYYMM) 
   
   ;climatology start and end dates [2004-2018 is the ARGO climatology)
   clst   = 1982
@@ -31,7 +31,7 @@ begin
   oNam  = "sst"
   osrc  = "OISSTv2"
   diro  = "~/data/OISST/"
-  filo  = "OIv2_SST_"+(/"1982-2023","2024"/)+".nc"
+  filo  = "OIv2_SST_"+(/"1982-2024"/)+".nc"
 
 
 ;plot file

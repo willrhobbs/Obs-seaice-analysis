@@ -8,7 +8,7 @@ begin
 
   clst  = 1979 ;1989 ;climatology end
   clen  = 2008  ;climatology start
-  years = (/2022,2023/)
+  years = (/2022,2023,2024/)
   tres  = "monthly" ; time resolution (monthly or daily)
 
   isDiff = False  ;if True plot dSIA/dt, plot SIA otherwise 
@@ -29,7 +29,7 @@ begin
     filo = src+"_"+var+"_"+tres+"_cycle_plot"
   end if
 
-  oType = "ps"
+  oType = "png"
 
 ;*******************
 ;read data
@@ -37,10 +37,7 @@ begin
 
 
   fi   = addfiles(fili, "r")
-  ttmp = fi[:]->time
-  time = toint(ttmp)
-  copy_VarAtts(ttmp,time)
-  delete(ttmp)
+
  
   SIA   = fi[:]->$iNam$
   if (isnan_ieee(SIA@_FillValue)) then
@@ -110,6 +107,7 @@ begin
     nanom = dimsizes(years)
     anom  = new((/nanom,ntim/), typeof(SIA))
 
+    time = fi[:]->YYYYMM
 
     st    = ind(time.eq.clst*100+1)
     en    = max(ind(time.le.clen*100+12))
@@ -195,7 +193,7 @@ pq = ispan(0,11,1)
 
   ;specif year anomalies
   res@xyLineThicknessF     = 4.	
-  res@xyLineColors        := (/"orange","red2"/)
+  res@xyLineColors        := (/"orange","red1","red4"/)
   res@pmLegendDisplayMode  = "Always"
   res@xyExplicitLegendLabels  = years
   res@pmLegendWidthF          = 0.2

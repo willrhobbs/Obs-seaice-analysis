@@ -8,7 +8,7 @@ begin
   yr     = 2024
   clst   = 1979  ;climatology start date
   clen   = 2008  ;climatology end
-  seas   = [/"FMA",2,3/] ;season,first month index (1-12),number of months in season)
+  seas   = [/"MAY",5,1/] ;season,first month index (1-12),number of months in season)
  
 
   latmin = -90.
@@ -25,7 +25,7 @@ begin
   
   dirp   = "plots/"
   filp   = src+"_sfcflux_"+seas[0]+"_"+yr+"_map"
-  pType  = "png"
+  pType  = "ps"
 
 
 

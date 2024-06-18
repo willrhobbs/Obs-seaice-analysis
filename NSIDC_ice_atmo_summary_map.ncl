@@ -7,13 +7,13 @@
 begin
 
 
-  isAni  = True
+  isAni  = False
   isAnom = True   ;plot SIC as anom or abs value
   latmax = -45.
   latmin = -90.
 
-  stdat  = 202301   ;start date (YYYYMM)  
-  endat  = 202404 ;;  ;end date (YYYYMM) 
+  stdat  = 202405   ;start date (YYYYMM)  
+  endat  = 202405 ;;  ;end date (YYYYMM) 
   
   ;climatology start and end dates [2004-2018 is the ARGO climatology)
   clst   = 1979
@@ -146,7 +146,7 @@ begin
  
   do i = 0, nmon-1
     clim         = dim_avg_n(var(mInd(0):mInd(1):12,:,:),0)
-    oatmo(i,:,:) = oatmo(i,:,:)  - clim
+;    oatmo(i,:,:) = oatmo(i,:,:)  - clim
     mInd         = mInd+1
   end do
 
@@ -237,10 +237,10 @@ begin
   ores@gsnFrame             = False
   ores@gsnLeftString        = ""
   ores@gsnRightString       = ""
-  ores@cnLevelSelectionMode = "ManualLevels"
-  ores@cnMinLevelValF       = -10.
-  ores@cnMaxLevelValF       = -ores@cnMinLevelValF
-  ores@cnLevelSpacingF      = 2.
+;  ores@cnLevelSelectionMode = "ManualLevels"
+;  ores@cnMinLevelValF       = -10.
+;  ores@cnMaxLevelValF       = -ores@cnMinLevelValF
+;  ores@cnLevelSpacingF      = 2.
 
   ores@gsnContourZeroLineThicknessF = 0.
   ores@gsnContourNegLineDashPattern = 2
@@ -293,7 +293,7 @@ begin
     ;convert png files to a gif
     CMD = "convert "+dirp+filp+"*.png "+dirp+filp+".gif"
     system(CMD)
- ;   system("rm "+dirp+filp+"*.png")  ;clean up 
+    system("rm "+dirp+filp+"*.png")  ;clean up 
 
   else
 
