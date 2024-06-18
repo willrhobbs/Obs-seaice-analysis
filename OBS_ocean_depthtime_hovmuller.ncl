@@ -16,9 +16,9 @@ begin
 
   
   ;time domain
-  stdat  = 200401
-  endat  = 202401
-  clst   = 2004
+  stdat  = 200601
+  endat  = 202405
+  clst   = 2006
   clen   = 2018
 
   refdats  = (/201608,202302/)  ;highlight specific dates (YYYYMM format)
