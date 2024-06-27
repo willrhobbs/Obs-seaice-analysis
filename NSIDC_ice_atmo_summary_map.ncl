@@ -12,8 +12,8 @@ begin
   latmax = -45.
   latmin = -90.
 
-  stdat  = 202405   ;start date (YYYYMM)  
-  endat  = 202405 ;;  ;end date (YYYYMM) 
+  stdat  = 202305   ;start date (YYYYMM)  
+  endat  = 202307 ;;  ;end date (YYYYMM) 
   
   ;climatology start and end dates [2004-2018 is the ARGO climatology)
   clst   = 1979
@@ -21,9 +21,9 @@ begin
 
 
 ;Obs data ice data
-  filoi = "~/data/NSIDC/raw/SH/monthly/seaice_conc_monthly_"+\
-  array_append_record("sh_197811_202312_v04r00.nc",\
-  "icdr_sh_2024"+sprinti("%0.2i",ispan(1,endat%100,1))+"_f18_v02r00.nc", 0)
+  filoi = "~/data/NSIDC/raw/SH/monthly/seaice_conc_monthly_sh_197811_202312_v04r00.nc";"+\
+;  array_append_record("sh_197811_202312_v04r00.nc",\
+;  "icdr_sh_2024"+sprinti("%0.2i",ispan(1,endat%100,1))+"_f18_v02r00.nc", 0)
 
   oiNam = "cdr_seaice_conc_monthly"
 
@@ -146,7 +146,7 @@ begin
  
   do i = 0, nmon-1
     clim         = dim_avg_n(var(mInd(0):mInd(1):12,:,:),0)
-;    oatmo(i,:,:) = oatmo(i,:,:)  - clim
+    oatmo(i,:,:) = oatmo(i,:,:)  - clim
     mInd         = mInd+1
   end do
 
