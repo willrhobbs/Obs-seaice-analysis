@@ -23,7 +23,7 @@ begin
   if (month.ne."ALL") then
     filo = str_sub_str(filo,"monthly",month)
   end if
-  oType = "png"
+  oType = "X11"
 
 
 
@@ -82,6 +82,7 @@ begin
 
     SIA := SIA({yrst*100+1:yren*100+12} )
   end if
+
 
 
 ;*********************
@@ -177,6 +178,9 @@ begin
 
     aplot = gsn_csm_xy(wks,ispan(1,dimsizes(SIA),1),SIA,res)
   end if
+
+
+
 
 ;add lines for st. dev
   lres                   = True
