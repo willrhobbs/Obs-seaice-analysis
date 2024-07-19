@@ -11,6 +11,8 @@ begin
   ;spatial domain
   latmax = -55.
   latmin = -75.
+  lonmin = 270.
+  lonmax = 90.
   zmin   = 0.
   zmax   = 1000.
 
@@ -37,7 +39,7 @@ src = "EN4"
   ;output file
   pType  = "png"
   dirp   = "plots/"
-  filp   = src+"_"+var+"_depthtime_SOcean_"+zmin+"-"+zmax+"m"
+  filp   = src+"_"+var+"_Weddell_depthtime_SOcean_"+zmin+"-"+zmax+"m"
 
 
 ;*******************
@@ -50,6 +52,11 @@ src = "EN4"
 
   tmp  = fi[:]->$vNam$(:,{zmin:zmax},{latmin:latmax},:)
 
+  if (lonmin.lt.lonmax) then
+    tmp := tmp(:,:,:,{lonmin:lonmax})
+  else
+    tmp(:,:,:,{lonmax:lonmin}) = tmp@_FillValue
+  end if
 
   dlat = 1.
   dy   = yresCalc(dlat)
@@ -136,7 +143,7 @@ src = "EN4"
 
 
 
-  res@gsnLeftString       = (-latmin)+"-"+(-latmax)+"~S~o~N~S"
+  res@gsnLeftString       = (-latmin)+"-"+(-latmax)+"~S~o~N~S, "+lonmin+"-"+lonmax+"~S~o~N~E"
   res@gsnRightString       = "("+clst+"-"+clen+" clim)"
   res@tiMainString         = var
 
