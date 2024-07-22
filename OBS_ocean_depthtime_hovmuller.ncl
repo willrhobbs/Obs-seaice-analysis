@@ -12,7 +12,7 @@ begin
   latmax = -55.
   latmin = -75.
   lonmin = 270.
-  lonmax = 90.
+  lonmax = 300.
   zmin   = 0.
   zmax   = 1000.
 
@@ -39,7 +39,7 @@ src = "EN4"
   ;output file
   pType  = "png"
   dirp   = "plots/"
-  filp   = src+"_"+var+"_Weddell_depthtime_SOcean_"+zmin+"-"+zmax+"m"
+  filp   = src+"_"+var+"_Bellingshausen_depthtime_SOcean_"+zmin+"-"+zmax+"m"
 
 
 ;*******************
