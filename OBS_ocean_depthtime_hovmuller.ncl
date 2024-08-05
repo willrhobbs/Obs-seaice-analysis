@@ -11,8 +11,8 @@ begin
   ;spatial domain
   latmax = -55.
   latmin = -75.
-  lonmin = 270.
-  lonmax = 300.
+  lonmin = 0.
+  lonmax = 360.
   zmin   = 0.
   zmax   = 1000.
 
@@ -39,7 +39,7 @@ src = "EN4"
   ;output file
   pType  = "png"
   dirp   = "plots/"
-  filp   = src+"_"+var+"_Bellingshausen_depthtime_SOcean_"+zmin+"-"+zmax+"m"
+  filp   = src+"_"+var+"_depthtime_SOcean_"+zmin+"-"+zmax+"m"
 
 
 ;*******************
