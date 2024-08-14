@@ -9,10 +9,11 @@ load "~/scripts/NCL/plot_funcs.ncl"
 begin
 
   ;spatial domain
+  sNam   = "Weddell"
   latmax = -55.
-  latmin = -75.
-  lonmin = 0.
-  lonmax = 360.
+  latmin = -65.
+  lonmin = 330.
+  lonmax = 20.
   zmin   = 0.
   zmax   = 1000.
 
@@ -39,7 +40,7 @@ src = "EN4"
   ;output file
   pType  = "png"
   dirp   = "plots/"
-  filp   = src+"_"+var+"_depthtime_SOcean_"+zmin+"-"+zmax+"m"
+  filp   = src+"_"+var+"_depthtime_"+sNam+"_"+zmin+"-"+zmax+"m"
 
 
 ;*******************
