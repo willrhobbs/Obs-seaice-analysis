@@ -9,10 +9,10 @@ load "~/scripts/NCL/plot_funcs.ncl"
 begin
 
   ;spatial domain
-  latmax = -55.
-  latmin = -65.
-  zmin   = 0.
-  zmax   = 100.
+  latmax = -50.
+  latmin = -60.
+  zmin   = 100.
+  zmax   = 150.
 
 
  

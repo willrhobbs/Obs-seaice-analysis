@@ -7,8 +7,8 @@ begin
 ;spatial domain
   latmin = -60.
   latmax = -50.
-  lonmin = 0.
-  lonmax = 360.
+  lonmin = 327.
+  lonmax = 10.
 
 ;climatology
   clst = 1982
@@ -18,11 +18,11 @@ begin
   oNam  = "sst"
   osrc  = "OISSTv2"
   diro  = "~/data/OISST/"
-  filo  = "OIv2_SST_1982-2023.nc"
+  filo  = "OIv2_SST_1982-2024.nc"
 
 ;output
   dirp  = "plots/"
-  filp  = osrc+"_sst_anom_SOcean_tplot"
+  filp  = osrc+"_ATl_sst_anom_SOcean_tplot"
   pType = "png"
 
 

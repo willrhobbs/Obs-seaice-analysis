@@ -11,8 +11,8 @@ begin
   latmax = -40.
 
 
-  stdat  = 202201   ;start date (YYYYMM)  
-  endat  = 202405 ;;  ;end date (YYYYMM) 
+  stdat  = 202102   ;start date (YYYYMM)  
+  endat  = 202406 ;;  ;end date (YYYYMM) 
   
   ;climatology start and end dates [2004-2018 is the ARGO climatology)
   clst   = 1982
@@ -20,7 +20,7 @@ begin
 
 
 ;Obs data ice data
-  filoi = "~/data/NSIDC/raw/SH/monthly/seaice_conc_monthly_"+\
+  filoi = "~/data/NSIDC/raw/SH/monthly/seaice_conc_monthly_"+\  
   array_append_record("sh_197811_202312_v04r00.nc",\
   "icdr_sh_2024"+sprinti("%0.2i",ispan(1,endat%100,1))+"_f18_v02r00.nc", 0)
 

@@ -7,13 +7,13 @@
 begin
 
 
-  isAni  = False
+  isAni  = True
   isAnom = True   ;plot SIC as anom or abs value
-  latmax = -45.
+  latmax = -50.
   latmin = -90.
 
-  stdat  = 202305   ;start date (YYYYMM)  
-  endat  = 202307 ;;  ;end date (YYYYMM) 
+  stdat  = 202202   ;start date (YYYYMM)  
+  endat  = 202407 ;;  ;end date (YYYYMM) 
   
   ;climatology start and end dates [2004-2018 is the ARGO climatology)
   clst   = 1979
@@ -21,10 +21,9 @@ begin
 
 
 ;Obs data ice data
-  filoi = "~/data/NSIDC/raw/SH/monthly/seaice_conc_monthly_sh_197811_202312_v04r00.nc";"+\
-;  array_append_record("sh_197811_202312_v04r00.nc",\
-;  "icdr_sh_2024"+sprinti("%0.2i",ispan(1,endat%100,1))+"_f18_v02r00.nc", 0)
-
+  filoi = "~/data/NSIDC/raw/SH/monthly/seaice_conc_monthly_"+array_append_record("sh_197811_202312_v04r00.nc",\
+  "icdr_sh_2024"+sprinti("%0.2i",ispan(1,endat%100,1))+"_f18_v02r00.nc", 0)
+  
   oiNam = "cdr_seaice_conc_monthly"
 
 
@@ -58,6 +57,8 @@ begin
  
   fi    = addfiles(filoi,"r")
   time  = cd_calendar(fi[:]->time,-1)
+
+
 
   if (.not.isMonotonic(time)) then
     pq = dim_pqsort(time, 2)
@@ -128,6 +129,7 @@ begin
 
 
     ntim                  = dimsizes(tmp(:,0,0))
+
     var(st:st+ntim-1,:,:) = tmp
     st                    = st+ntim
 

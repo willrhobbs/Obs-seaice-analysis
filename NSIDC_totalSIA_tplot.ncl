@@ -23,7 +23,7 @@ begin
   if (month.ne."ALL") then
     filo = str_sub_str(filo,"monthly",month)
   end if
-  oType = "X11"
+  oType = "png"
 
 
 
