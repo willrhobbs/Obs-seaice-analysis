@@ -8,7 +8,7 @@ begin
   yr     = 2024
   clst   = 1979  ;climatology start date
   clen   = 2008  ;climatology end
-  seas   = [/"MAY",5,1/] ;season,first month index (1-12),number of months in season)
+  seas   = [/"MAY-AUG",5,4/] ;season,first month index (1-12),number of months in season)
  
 
   latmin = -90.

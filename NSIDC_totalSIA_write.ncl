@@ -4,7 +4,7 @@
 begin
 
   tstep   = "monthly"
-;  version = "v02r00"
+  version = "v02r00"
   hemi    = "SH"
   diri    = "~/data/NSIDC/raw/"+hemi+"/"+tstep+"/"
 

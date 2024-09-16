@@ -13,7 +13,7 @@ begin
   latmin = -90.
 
   stdat  = 202202   ;start date (YYYYMM)  
-  endat  = 202407 ;;  ;end date (YYYYMM) 
+  endat  = 202408 ;;  ;end date (YYYYMM) 
   
   ;climatology start and end dates [2004-2018 is the ARGO climatology)
   clst   = 1979
