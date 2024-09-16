@@ -9,22 +9,22 @@ load "~/scripts/NCL/plot_funcs.ncl"
 begin
 
   ;spatial domain
-  sNam   = "Weddell"
+  sNam   = "SOcean" ;"Weddell"
   latmax = -55.
   latmin = -65.
-  lonmin = 330.
-  lonmax = 20.
+  lonmin = 0.;330.
+  lonmax = 360. ;20.
   zmin   = 0.
   zmax   = 1000.
 
   
   ;time domain
   stdat  = 200601
-  endat  = 202406
+  endat  = 202407
   clst   = 2006
   clen   = 2018
 
-  refdats  = (/201608,202302/)  ;highlight specific dates (YYYYMM format)
+  refdats  = (/201609,202302/)  ;highlight specific dates (YYYYMM format)
 
 
   ;input file 
