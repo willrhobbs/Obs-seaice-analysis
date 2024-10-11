@@ -13,7 +13,7 @@ begin
   latmin = -90.
 
   stdat  = 202202   ;start date (YYYYMM)  
-  endat  = 202408 ;;  ;end date (YYYYMM) 
+  endat  = 202409 ;;  ;end date (YYYYMM) 
   
   ;climatology start and end dates [2004-2018 is the ARGO climatology)
   clst   = 1979
@@ -55,6 +55,7 @@ begin
 
   ;get time array and sort in time order
  
+
   fi    = addfiles(filoi,"r")
   time  = cd_calendar(fi[:]->time,-1)
 
@@ -108,46 +109,23 @@ begin
 
 
   fi   := addfiles(dira+filoa,"r") 
-  time := cd_calendar(fi[:]->time, -1)  
+  var   = fi[:]->$oaNam$(:,{latmin:latmax},:)
+  
 
-  dimz   := (/ dimsizes(time),\
-  dimsizes(fi[0]->latitude({latmin:latmax})),\
-  getfilevardimsizes(fi[0],"longitude")/)
-  var     = new(dimz, float)
-
-  st = 0
-   
+;(monthly 'date' coord in ERA5 has units YYYYMMDD - get rid of the trailaing DD)
+  var&date = var&date/100 
 
 
-  do i = 0, dimsizes(filoa)-1
-
-    if (dimsizes(getfilevardimsizes(fi[i],oaNam)).eq.4) then
-      tmp := dim_max_n_Wrap(short2flt(fi[i]->$oaNam$(:,:,{latmin:latmax},:)),1)
-    else
-      tmp:= short2flt(fi[i]->$oaNam$(:,{latmin:latmax},:))
-    end if
-
-
-    ntim                  = dimsizes(tmp(:,0,0))
-
-    var(st:st+ntim-1,:,:) = tmp
-    st                    = st+ntim
-
-  end do
-  delete(tmp)
-
-
-  var&time := time
-
-
-  ;get anomaly
+  ;get anomaly 
   oatmo = var({stdat:endat},:,:)
   nmon  = dimsizes(oatmo(:,0,0))
 
-  mInd =(/ ind(time.eq.clst*100+(stdat%100)), ind(time.eq.clen*100+(stdat%100))/)
+  mInd =(/ clst*100+(stdat%100), clen*100+(stdat%100)/)
+
+
  
   do i = 0, nmon-1
-    clim         = dim_avg_n(var(mInd(0):mInd(1):12,:,:),0)
+    clim         = dim_avg_n(var({mInd(0):mInd(1):12},:,:),0)
     oatmo(i,:,:) = oatmo(i,:,:)  - clim
     mInd         = mInd+1
   end do
@@ -284,7 +262,7 @@ begin
   if (isAni) then
 
     do mm = 0, nmon-1
-      res@tiMainString = oatmo&time(mm)
+      res@tiMainString = oatmo&date(mm)
 
       plot = overlay_plot(osic(:,mm,:,:),oatmo(mm,:,:))  ;obs
       draw(plot)

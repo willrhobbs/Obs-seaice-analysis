@@ -8,7 +8,7 @@ begin
   yrst = 1979
   yren = 2024
   clst = 1979  ;climatology end
-  clen = 2008  ;climatology start
+  clen = 2018  ;climatology start
 
   month = "ALL" ;month to plot (string). 
             ;For all months, 'ALL', 
@@ -179,7 +179,6 @@ begin
 
     aplot = gsn_csm_xy(wks,ispan(1,dimsizes(SIA),1),SIA,res)
   end if
-
 
 
 
