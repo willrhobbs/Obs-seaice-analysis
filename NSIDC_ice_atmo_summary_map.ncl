@@ -7,13 +7,13 @@
 begin
 
 
-  isAni  = True
+  isAni  = False
   isAnom = True   ;plot SIC as anom or abs value
   latmax = -50.
   latmin = -90.
 
-  stdat  = 202202   ;start date (YYYYMM)  
-  endat  = 202409 ;;  ;end date (YYYYMM) 
+  stdat  = 202406   ;start date (YYYYMM)  
+  endat  = 202408 ;;  ;end date (YYYYMM) 
   
   ;climatology start and end dates [2004-2018 is the ARGO climatology)
   clst   = 1979
@@ -21,8 +21,8 @@ begin
 
 
 ;Obs data ice data
-  filoi = "~/data/NSIDC/raw/SH/monthly/seaice_conc_monthly_"+array_append_record("sh_197811_202312_v04r00.nc",\
-  "icdr_sh_2024"+sprinti("%0.2i",ispan(1,endat%100,1))+"_f18_v02r00.nc", 0)
+  filoi = "~/data/NSIDC/raw/SH/monthly/seaice_conc_monthly_"+array_append_record("sh_197811_202406_v04r00.nc",\
+  "icdr_sh_2024"+sprinti("%0.2i",ispan(7,endat%100,1))+"_f18_v02r00.nc", 0)
   
   oiNam = "cdr_seaice_conc_monthly"
 

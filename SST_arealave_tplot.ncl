@@ -5,10 +5,10 @@ load "~/scripts/NCL/ncl_funcs.ncl"
 begin
 
 ;spatial domain
-  latmin = -60.
-  latmax = -50.
-  lonmin = 327.
-  lonmax = 10.
+  latmin = -65.
+  latmax = -45.
+  lonmin = 0.
+  lonmax = 360.
 
 ;climatology
   clst = 1982
@@ -22,7 +22,7 @@ begin
 
 ;output
   dirp  = "plots/"
-  filp  = osrc+"_ATl_sst_anom_SOcean_tplot"
+  filp  = osrc+"_midlat_sst_anom_SOcean_tplot"
   pType = "png"
 
 
@@ -68,7 +68,9 @@ begin
   wks = gsn_open_wks(pType, dirp+filp)
 
   res                       = True
-  res@gsnMaximize           = True
+  res@gsnDraw               = False
+  res@gsnFrame              = False
+
   res@vpHeightF             = 0.5
   res@vpWidthF              = 1.
 
@@ -96,6 +98,34 @@ begin
   aplot = gsn_csm_xy(wks,ispan(1,dimsizes(sst),1),sst,res)
 
 
+;map plot showing region
+  resm = True
+  resm@gsnDraw          = False
+  resm@gsnFrame         = False
+  resm@gsnPolar         = "SH"
+  resm@mpMaxLatF        = max((/latmax+10, -45./))
+  map = gsn_csm_map_polar(wks, resm)
+
+  resp  = True
+  resp@gsLineThicknessF   = 4.
+
+  if (lonmax-lonmin.lt.360.) then
+    xpts = (/lonmin, lonmax, lonmax, lonmin,lonmin/)
+    ypts = (/latmin,latmin, latmax,latmax,latmin /)
+    pgon  = gsn_add_polyline(wks, map,xpts, ypts, resp)
+print("nope")
+  else
+    pgon = [/gsn_add_polyline(wks, map,(/0.,180.,360./), (/latmin,latmin,latmin/), resp), \
+    gsn_add_polyline(wks, map,(/0.,180.,360./), (/latmax,latmax,latmax/), resp)/]
+  end if
+
+;Panel
+    resP          = True
+    resP@gsnMaximize    = True
+    gsn_panel(wks, (/aplot , map/), (/1,2/),resP)
+   
+
+exit
 
 ;**************************
 ;plot standardized anoms

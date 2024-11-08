@@ -6,12 +6,12 @@
 begin
 
 
-  isAni  = True
+  isAni  = False
   isAnom = True   ;plot SST as anom or abs value
   latmax = -40.
 
 
-  stdat  = 202102   ;start date (YYYYMM)  
+  stdat  = 202407   ;start date (YYYYMM)  
   endat  = 202409 ;;  ;end date (YYYYMM) 
   
   ;climatology start and end dates [2004-2018 is the ARGO climatology)
@@ -100,7 +100,7 @@ begin
   tmp   := fo[:]->$oNam$(:,{:latmax},:)
  
   tmp&time := cd_calendar(fo[:]->time, -1)
-  
+
   sst       = tmp({stdat:endat},:,:)
 
 
