@@ -64,6 +64,9 @@ begin
 ;plot anoms
 ;**********************
 
+  
+  pType@wkWidth = 2500
+  pType@wkHeight = 2500 
 
   wks = gsn_open_wks(pType, dirp+filp)
 
@@ -107,13 +110,14 @@ begin
   map = gsn_csm_map_polar(wks, resm)
 
   resp  = True
-  resp@gsLineThicknessF   = 4.
+  resp@gsLineThicknessF   = 3.
+  resp@gsFillColor  = "pink"
 
   if (lonmax-lonmin.lt.360.) then
     xpts = (/lonmin, lonmax, lonmax, lonmin,lonmin/)
     ypts = (/latmin,latmin, latmax,latmax,latmin /)
     pgon  = gsn_add_polyline(wks, map,xpts, ypts, resp)
-print("nope")
+
   else
     pgon = [/gsn_add_polyline(wks, map,(/0.,180.,360./), (/latmin,latmin,latmin/), resp), \
     gsn_add_polyline(wks, map,(/0.,180.,360./), (/latmax,latmax,latmax/), resp)/]

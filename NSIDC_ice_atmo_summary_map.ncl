@@ -7,13 +7,13 @@
 begin
 
 
-  isAni  = False
+  isAni  = True
   isAnom = True   ;plot SIC as anom or abs value
   latmax = -50.
   latmin = -90.
 
-  stdat  = 202406   ;start date (YYYYMM)  
-  endat  = 202408 ;;  ;end date (YYYYMM) 
+  stdat  = 202203   ;start date (YYYYMM)  
+  endat  = 202411 ;;  ;end date (YYYYMM) 
   
   ;climatology start and end dates [2004-2018 is the ARGO climatology)
   clst   = 1979
@@ -32,7 +32,7 @@ begin
   asrc  = "ERA5"
   ;miust be a single file, to avoid short-to-float conversion inconsistencies with ERA data
   dira  = "~/data/REANALYSIS/"+asrc+"/"
-  filoa = asrc+"_msl_monthly_SH_"+(/"1979-2023","2024"/)+".nc"
+  filoa = asrc+"_msl_monthly_SH_1979-2024.nc"
 
 
 
@@ -109,11 +109,16 @@ begin
 
 
   fi   := addfiles(dira+filoa,"r") 
-  var   = fi[:]->$oaNam$(:,{latmin:latmax},:)
-  
+  var   = fi[0]->$oaNam$(:,{latmin:latmax},:)
 
-;(monthly 'date' coord in ERA5 has units YYYYMMDD - get rid of the trailaing DD)
-  var&date = var&date/100 
+;convert time *untile ERA5 decide to change it again...)
+  tAtts = fi[0]->$var!0$(0)
+  time := toint(fi[:]->$var!0$)
+  copy_VarAtts(tAtts, time)
+  var&$var!0$ := cd_calendar(time, -1)
+
+
+
 
 
   ;get anomaly 
@@ -262,7 +267,7 @@ begin
   if (isAni) then
 
     do mm = 0, nmon-1
-      res@tiMainString = oatmo&date(mm)
+      res@tiMainString = oatmo&$oatmo!0$(mm)
 
       plot = overlay_plot(osic(:,mm,:,:),oatmo(mm,:,:))  ;obs
       draw(plot)

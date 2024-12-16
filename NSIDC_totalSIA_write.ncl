@@ -5,7 +5,7 @@ begin
 
   tstep   = "monthly"
 ;year =     ; only used for daily data
-  version = "v04r00"
+;  version = "v04r00"
   hemi    = "SH"
   diri    = "~/data/NSIDC/raw/"+hemi+"/"+tstep+"/"
 ;diri = "/g/data/gv90/P6_data/NSIDC/G10016_V2/south/daily/"
