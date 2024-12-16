@@ -6,23 +6,25 @@
 begin
 
 
-  isAni  = False
+  isAni  = True
   isAnom = True   ;plot SST as anom or abs value
   latmax = -40.
 
 
-  stdat  = 202407   ;start date (YYYYMM)  
-  endat  = 202409 ;;  ;end date (YYYYMM) 
+  stdat  = 202101   ;start date (YYYYMM)  
+  endat  = 202411 ;;  ;end date (YYYYMM) 
   
   ;climatology start and end dates [2004-2018 is the ARGO climatology)
   clst   = 1982
   clen   = 2011
 
+  dirb   = "/g/data/jk72/wrh581/"
 
 ;Obs data ice data
-  filoi = "~/data/NSIDC/raw/SH/monthly/seaice_conc_monthly_"+\  
-  array_append_record("sh_197811_202312_v04r00.nc",\
-  "icdr_sh_2024"+sprinti("%0.2i",ispan(1,endat%100,1))+"_f18_v02r00.nc", 0)
+ ; filoi = "~/data/NSIDC/raw/SH/monthly/seaice_conc_monthly_"+\  
+filoi = dirb+"NSIDC/monthly_sic/seaice_conc_monthly_"+\
+  array_append_record("sh_197811_202406_v04r00.nc",\
+  "icdr_sh_2024"+sprinti("%0.2i",ispan(7,endat%100,1))+"_f18_v02r00.nc", 0)
 
   oiNam = "cdr_seaice_conc_monthly"
 
@@ -30,12 +32,12 @@ begin
 ;SST data
   oNam  = "sst"
   osrc  = "OISSTv2"
-  diro  = "~/data/OISST/"
+  diro  = dirb+"/OISST/"
   filo  = "OIv2_SST_"+(/"1982-2024"/)+".nc"
 
 
 ;plot file
-  dirp  = "plots/"
+  dirp  = dirb+"/Obs-seaice-analysis/plots/"
   filp  = "NSIDC_sic_"+osrc+"_sst_map_"+stdat+"-"+endat
   pType = "png"
   if (isAni) then

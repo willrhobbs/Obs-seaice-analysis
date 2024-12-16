@@ -3,11 +3,12 @@
 
 begin
 
-  tstep   = "daily"
+  tstep   = "monthly"
 year = 2024    ; only used for daily data
   version = "v02r00"
   hemi    = "SH"
 ;  diri    = "~/data/NSIDC/raw/"+hemi+"/"+tstep+"/"
+diri  ="/g/data/jk72/wrh581/NSIDC/monthly_sic/"
 diri = "/g/data/gv90/P6_data/NSIDC/G10016_V2/south/daily/"
 ;diri = "/g/data/gv90/P6_data/NSIDC/G02202_V4/south/aggregate/"
 
@@ -18,7 +19,7 @@ diri = "/g/data/gv90/P6_data/NSIDC/G10016_V2/south/daily/"
   aNam    = "cell_area"
 
 
-  diro    = "/g/data/jk72/wrh581/NSIDC/SIE_daily/";"~/data/NSIDC/";
+  diro    = "/g/data/jk72/wrh581/NSIDC/";SIE_daily/";"~/data/NSIDC/";
   filo    = "NSIDC_"+hemi+"_totalSIA_"+tstep+"_"+version+".nc"
 
 
