@@ -12,8 +12,8 @@ begin
   latmax = -50.
   latmin = -90.
 
-  stdat  = 202203   ;start date (YYYYMM)  
-  endat  = 202411 ;;  ;end date (YYYYMM) 
+  stdat  = 202409   ;start date (YYYYMM)  
+  endat  = 202412 ;;  ;end date (YYYYMM) 
   
   ;climatology start and end dates [2004-2018 is the ARGO climatology)
   clst   = 1979
@@ -21,10 +21,13 @@ begin
 
 
 ;Obs data ice data
-  filoi = "~/data/NSIDC/raw/SH/monthly/seaice_conc_monthly_"+array_append_record("sh_197811_202406_v04r00.nc",\
-  "icdr_sh_2024"+sprinti("%0.2i",ispan(7,endat%100,1))+"_f18_v02r00.nc", 0)
+  filoi = "~/data/NSIDC/raw/SH/monthly/sic_pss25_"+array_append_record("197811-202406_v05r00.nc",\
+ "2024"+sprinti("%0.2i",ispan(7,endat%100,1))+"_F17_icdr_v03r00.nc", 0)
+
+; "seaice_conc_monthly_"+array_append_record("sh_197811_202406_v04r00.nc",\
+;  "icdr_sh_2024"+sprinti("%0.2i",ispan(7,endat%100,1))+"_f18_v02r00.nc", 0)
   
-  oiNam = "cdr_seaice_conc_monthly"
+ oiNam = "cdr_seaice_conc_monthly"
 
 
 ;atmo data
@@ -57,7 +60,14 @@ begin
  
 
   fi    = addfiles(filoi,"r")
-  time  = cd_calendar(fi[:]->time,-1)
+  time = fi[:]->time
+  if (typeof(time).eq."int64") then
+    ttmp  = time
+    time := toint(ttmp)
+    copy_VarAtts(ttmp, time)
+    delete(ttmp)
+  end if
+  time  := cd_calendar(time,-1)
 
 
 
@@ -70,6 +80,7 @@ begin
   ;read data
   tmp   = fi[:]->$oiNam$ ;(time,ygrid,xgrid)
   tmp  := byte2flt(tmp)
+  tmp&time := time
 
 
   ;get climatology and anom
@@ -83,11 +94,16 @@ begin
   osic(1,:,:,:) = tmp(st:en,:,:)   ;anomaly period
   
 ;climatology
-  mInd =(/ ind(time.eq.clst*100+(stdat%100)), ind(time.eq.clen*100+(stdat%100))/)
+  mInd = stdat%100
 
   do i = 0, nmon-1
-    osic(0,i,:,:) = dim_avg_n(tmp(mInd(0):mInd(1):12,:,:),0)
-    mInd          = mInd+1 
+    osic(0,i,:,:) = dim_avg_n(tmp({(clst*100+mInd):(clen*100+mInd):12},:,:),0)
+
+    if (mInd.eq.12) then
+      mInd = 1
+    else
+      mInd         = mInd+1
+    end if 
   end do
 
   if (isAnom) then
@@ -119,20 +135,20 @@ begin
 
 
 
-
-
   ;get anomaly 
   oatmo = var({stdat:endat},:,:)
-  nmon  = dimsizes(oatmo(:,0,0))
-
-  mInd =(/ clst*100+(stdat%100), clen*100+(stdat%100)/)
+  mInd := stdat%100
 
 
- 
   do i = 0, nmon-1
-    clim         = dim_avg_n(var({mInd(0):mInd(1):12},:,:),0)
+    clim         = dim_avg_n(var({(clst*100+mInd):(clen*100+mInd):12},:,:),0)
     oatmo(i,:,:) = oatmo(i,:,:)  - clim
-    mInd         = mInd+1
+
+    if (mInd.eq.12) then
+      mInd = 1
+    else
+      mInd         = mInd+1
+    end if
   end do
 
   delete([/var,clim/])

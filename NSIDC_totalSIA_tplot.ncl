@@ -15,7 +15,7 @@ begin
             ;otherwies 3-letter season name (ASO) or  month (JAN, FEB)       ;
 
   diri = "~/data/NSIDC/"
-  fili = "NSIDC_SH_totalSIA_monthly_"+(/"v04r00.nc","v02r00.nc"/)
+  fili = "NSIDC_SH_totalSIA_monthly_"+(/"v05r00.nc","v03r00.nc"/);(/"v04r00.nc","v02r00.nc"/)
   iNam = "SIA_cdr"
 
   diro = "plots/"
@@ -24,7 +24,7 @@ begin
     filo = str_sub_str(filo,"monthly",month)
   end if
 
-  oType = "png"
+  oType = "X11";"png"
 
 
 

@@ -3,28 +3,28 @@
 
 begin
 
-<<<<<<< HEAD
+
   tstep   = "monthly"
 ;year =     ; only used for daily data
-;  version = "v04r00"
-=======
-  tstep   = "daily"
-year = 2024    ; only used for daily data
-  version = "v02r00"
->>>>>>> 029920c3801864913f2952b8a9cf2b90d74acb62
+  version = "v03r00"
+
+ ; tstep   = "daily"
+;year = 2024    ; only used for daily data
+ ; version = "v02r00"
+
   hemi    = "SH"
-;  diri    = "~/data/NSIDC/raw/"+hemi+"/"+tstep+"/"
-diri = "/g/data/gv90/P6_data/NSIDC/G10016_V2/south/daily/"
+  diri    = "~/data/NSIDC/raw/"+hemi+"/"+tstep+"/"
+;diri = "/g/data/gv90/P6_data/NSIDC/G10016_V2/south/daily/"
 ;diri = "/g/data/gv90/P6_data/NSIDC/G02202_V4/south/aggregate/"
 
-  src     = (/"cdr","nsidc_bt"/)
+  src     = (/"cdr"/);,"nsidc_bt"/)
 
   ;grid cell area file (comment out if assumuning 25km equal area
-  Afil    = "/g/data/jk72/wrh581/NSIDC/NSIDC0771_CellArea_PS_S25km_v1.0.nc";"~/data/NSIDC/NSIDC0771_CellArea_PS_S25km_v1.0.nc";
+  Afil    = "~/data/NSIDC/NSIDC0771_CellArea_PS_S25km_v1.0.nc";"/g/data/jk72/wrh581/NSIDC/NSIDC0771_CellArea_PS_S25km_v1.0.nc"
   aNam    = "cell_area"
 
 
-  diro    = "/g/data/jk72/wrh581/NSIDC/SIE_daily/";"~/data/NSIDC/";
+  diro    = "~/data/NSIDC/";"/g/data/jk72/wrh581/NSIDC/SIE_daily/";
   filo    = "NSIDC_"+hemi+"_totalSIA_"+tstep+"_"+version+".nc"
 
 
@@ -39,8 +39,10 @@ diri = "/g/data/gv90/P6_data/NSIDC/G10016_V2/south/daily/"
      fili = systemfunc("ls "+diri+"seaice_conc_"+tstep+"_*sh_"+year+"*_"+version+".nc") 	
      filo = "NSIDC_"+hemi+"_totalSIA_"+tstep+"_"+year+"_"+version+".nc"
   else
-     fili = systemfunc("ls "+diri+"seaice_conc_"+tstep+"_*sh_*_"+version+".nc")
+  ;   fili = systemfunc("ls "+diri+"seaice_conc_"+tstep+"_*sh_*_"+version+".nc")
+fili = systemfunc("ls "+diri+"sic_pss25_*_"+version+".nc")
   end if
+
 
   fi   = addfiles(fili,"r")
 
@@ -93,6 +95,14 @@ diri = "/g/data/gv90/P6_data/NSIDC/G10016_V2/south/daily/"
 
 ;time corrections  
   time   = fi[:]->time
+
+  if (typeof(time).eq."int64") then
+    ttmp  = time
+    time := toint(ttmp)
+    copy_VarAtts(ttmp, time)
+    delete(ttmp)
+  end if
+
 
   if (tstep.eq."monthly") then 
     YYYYMM = cd_calendar(time,-1)
