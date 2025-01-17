@@ -9,18 +9,18 @@ load "~/scripts/NCL/plot_funcs.ncl"
 begin
 
   ;spatial domain
-  sNam   = "Weddell"; "SOcean" ;
+  sNam   = "Weddell" ; "SOcean" ;
   latmax = -55.
   latmin = -65.
-  lonmin = 330. ; 0. ;
-  lonmax = 20. ;360. ;
+  lonmin = 330. ;0. ;
+  lonmax = 20.; 360. 
   zmin   = 0.
   zmax   = 1000.
 
   
   ;time domain
   stdat  = 200601
-  endat  = 202411
+  endat  = 202412
   clst   = 2006
   clen   = 2018
 

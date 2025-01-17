@@ -12,7 +12,7 @@ begin
 
 
   stdat  = 202101   ;start date (YYYYMM)  
-  endat  = 202411 ;;  ;end date (YYYYMM) 
+  endat  = 202412 ;;  ;end date (YYYYMM) 
   
   ;climatology start and end dates [2004-2018 is the ARGO climatology)
   clst   = 1982
@@ -21,10 +21,10 @@ begin
   dirb   = "/g/data/jk72/wrh581/"
 
 ;Obs data ice data
- ; filoi = "~/data/NSIDC/raw/SH/monthly/seaice_conc_monthly_"+\  
-filoi = dirb+"NSIDC/monthly_sic/seaice_conc_monthly_"+\
-  array_append_record("sh_197811_202406_v04r00.nc",\
-  "icdr_sh_2024"+sprinti("%0.2i",ispan(7,endat%100,1))+"_f18_v02r00.nc", 0)
+ ; filoi = "~/data/NSIDC/raw/SH/monthly/sic_pss25_"+\  
+filoi = dirb+"NSIDC/monthly_sic/sic_pss25_"+\
+  array_append_record("197811-202406_v05r00.nc",\
+  "2024"+sprinti("%0.2i",ispan(7,endat%100,1))+"_F17_icdr_v03r00.nc", 0)
 
   oiNam = "cdr_seaice_conc_monthly"
 
@@ -53,7 +53,14 @@ filoi = dirb+"NSIDC/monthly_sic/seaice_conc_monthly_"+\
   ;get time array and sort in time order
  
   fi    = addfiles(filoi,"r")
-  time  = cd_calendar(fi[:]->time,-1)
+  time = fi[:]->time
+  if (typeof(time).eq."int64") then
+    ttmp  = time
+    time := toint(ttmp)
+    copy_VarAtts(ttmp, time)
+    delete(ttmp)
+  end if
+  time := cd_calendar(time,-1)
 
   if (.not.isMonotonic(time)) then
     pq = dim_pqsort(time, 2)
