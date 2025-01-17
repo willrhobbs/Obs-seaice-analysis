@@ -24,7 +24,7 @@ begin
     filo = str_sub_str(filo,"monthly",month)
   end if
 
-  oType = "X11";"png"
+  oType = "png"
 
 
 
