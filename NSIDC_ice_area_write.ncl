@@ -28,7 +28,8 @@ begin
    ymin = -87.5
    ymax = -30.5
    nlat = 58
-   fili = systemfunc("ls "+diri+"seaice_conc_monthly_*sh_*_"+version+".nc")
+  ; fili = systemfunc("ls "+diri+"seaice_conc_monthly_*sh_*_"+version+".nc")
+ fili = systemfunc("ls "+diri+"sic_pss25_*_"+version+".nc")
  else
    ymin = 45.5
    ymax = 89.5
@@ -54,17 +55,24 @@ begin
  
  f = addfiles(fili,"r")
 
- ttmp = f[:]->time
+
+  time = f[:]->time
+  if (typeof(time).eq."int64") then
+    ttmp  = time
+    time := toint(ttmp)
+    copy_VarAtts(ttmp, time)
+    delete(ttmp)
+  end if
+  time  := cd_calendar(time,-1)
 
  ;sort time order
- if (isMonotonic(ttmp).lt.1) then
-   pq   = dim_pqsort(ttmp,1) 
-   f    = addfiles(fili(pq),"r")
-   ttmp = f[:]->time
- end if   
+; if (isMonotonic(ttmp).lt.1) then
+;   pq   = dim_pqsort(ttmp,1) 
+;   f    = addfiles(fili(pq),"r")
+;   ttmp = f[:]->time
+; end if   
 
 
- time = cd_calendar(ttmp,-1)
 
  
 
@@ -108,7 +116,12 @@ begin
     ftmp := addfile(ftmp,"r")
     lat2d = ftmp->latitude
     lon2d = ftmp->longitude 
-  else
+  elseif (version.eq."v03r00") then
+    ftmp  = systemfunc("ls "+diri+"sic_pss25_*_v05r00.nc")
+    ftmp := addfile(ftmp(0),"r")
+    lat2d = ftmp->latitude
+    lon2d = ftmp->longitude 
+  else 
     lat2d = f[0]->latitude
     lon2d = f[0]->longitude
   end if

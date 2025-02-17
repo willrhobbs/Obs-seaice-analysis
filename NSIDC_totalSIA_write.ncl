@@ -44,6 +44,7 @@ fili = systemfunc("ls "+diri+"sic_pss25_*_"+version+".nc")
   end if
 
 
+
   fi   = addfiles(fili,"r")
 
 

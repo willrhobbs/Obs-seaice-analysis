@@ -12,8 +12,8 @@ begin
   latmax = -50.
   latmin = -90.
 
-  stdat  = 202409   ;start date (YYYYMM)  
-  endat  = 202412 ;;  ;end date (YYYYMM) 
+  stdat  = 202203   ;start date (YYYYMM)  
+  endat  = 202501 ;;  ;end date (YYYYMM) 
   
   ;climatology start and end dates [2004-2018 is the ARGO climatology)
   clst   = 1979
@@ -22,7 +22,10 @@ begin
 
 ;Obs data ice data
   filoi = "~/data/NSIDC/raw/SH/monthly/sic_pss25_"+array_append_record("197811-202406_v05r00.nc",\
- "2024"+sprinti("%0.2i",ispan(7,endat%100,1))+"_F17_icdr_v03r00.nc", 0)
+ "2024"+sprinti("%0.2i",ispan(7,12,1))+"_F17_icdr_v03r00.nc", 0)
+filoi := array_append_record(filoi,"~/data/NSIDC/raw/SH/monthly/sic_pss25_202501_F17_icdr_v03r00.nc" ,0)
+
+
 
 ; "seaice_conc_monthly_"+array_append_record("sh_197811_202406_v04r00.nc",\
 ;  "icdr_sh_2024"+sprinti("%0.2i",ispan(7,endat%100,1))+"_f18_v02r00.nc", 0)
@@ -33,9 +36,10 @@ begin
 ;atmo data
   oaNam = "msl"
   asrc  = "ERA5"
-  ;miust be a single file, to avoid short-to-float conversion inconsistencies with ERA data
+
   dira  = "~/data/REANALYSIS/"+asrc+"/"
-  filoa = asrc+"_msl_monthly_SH_1979-2024.nc"
+  filoa = (/asrc+"_msl_monthly_SH_1979-2024.nc"\
+           ,asrc+"_msl_monthly_SH_2025.nc"/)
 
 
 
@@ -57,7 +61,6 @@ begin
 ;*************************
 
   ;get time array and sort in time order
- 
 
   fi    = addfiles(filoi,"r")
   time = fi[:]->time
@@ -125,10 +128,12 @@ begin
 
 
   fi   := addfiles(dira+filoa,"r") 
-  var   = fi[0]->$oaNam$(:,{latmin:latmax},:)
+  var   = fi[:]->$oaNam$(:,{latmin:latmax},:)
+
+
 
 ;convert time *untile ERA5 decide to change it again...)
-  tAtts = fi[0]->$var!0$(0)
+  tAtts = fi[:]->$var!0$(0)
   time := toint(fi[:]->$var!0$)
   copy_VarAtts(tAtts, time)
   var&$var!0$ := cd_calendar(time, -1)
