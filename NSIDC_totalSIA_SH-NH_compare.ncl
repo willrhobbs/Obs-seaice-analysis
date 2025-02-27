@@ -121,10 +121,19 @@ delete([/res@trXMinF, res@trXMaxF/])
   res@tiYAxisString      = "Arctic SIE (million km~S~2~N~)"
   res@tiXAxisString      = "Antarctic SIE (million km~S~2~N~)"
 
+  res@gsnXRefLine       := avg(SIA_SH({:refyear-1}))
+  res@gsnYRefLine        = avg(SIA_NH({:refyear-1}))
+  res@gsnXRefLineColor   = "black"
+
   res@gsnLeftString = "Arctic vs Antarctic"
 
-  plot(1) = gsn_csm_xy(wks, SIA_SH({:refyear}), SIA_NH({:refyear}),res)
+  plot(1) = gsn_csm_xy(wks, SIA_SH({:refyear-1}), SIA_NH({:refyear-1}),res)
   res@xyMarkerColor = "red"
+
+  res@gsnXRefLine       := avg(SIA_SH({refyear:}))
+  res@gsnYRefLine        = avg(SIA_NH({refyear:}))
+  res@gsnXRefLineColor   = res@xyMarkerColor
+    res@gsnYRefLineColor =   res@gsnXRefLineColor  
 
   oplot =  gsn_csm_xy(wks, SIA_SH({refyear:}), SIA_NH({refyear:}),res)
   overlay(plot(1), oplot)
