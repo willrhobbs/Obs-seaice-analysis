@@ -6,11 +6,11 @@ load "~/scripts/NCL/ncl_funcs.ncl"
 begin
 
   yrst = 1979
-  yren = 2024
+  yren = 2025
   clst = 1979  ;climatology end
   clen = 2018  ;climatology start
 
-  month = "ALL" ;month to plot (string). 
+  month = "DJF" ;month to plot (string). 
             ;For all months, 'ALL', 
             ;otherwies 3-letter season name (ASO) or  month (JAN, FEB)       ;
 
@@ -47,13 +47,9 @@ begin
     SIA  = fi[:]->$iNam$(st:en:12)
 
     SIA&time := YYYYMM(st:en:12)/100 ;convert to year
-    SIA       = SIA - avg(SIA({clst:clen}))
+ ;   SIA       = SIA - avg(SIA({clst:clen}))
     sd        = stddev(SIA({clst:clen}))
     SIA      := SIA({yrst:yren})
-
-
-    SIA     = SIA - avg(SIA({clst:clen}))
-    sd      = stddev(SIA({clst:clen}))
 
   else
     st       = min(ind(fi[:]->YYYYMM.ge.yr1*100+1))
@@ -65,9 +61,19 @@ begin
     if (any(seasref.eq.month)) then  ;seasonl mean
 
     ;get 3-month seasons
+
+        ;pad final year
+      enmon  = max(SIA&time)%100
+      if (enmon.ne.12) then 
+        SIA := array_append_record(SIA, new(12-enmon, typeof(SIA)),0)
+        SIA&time := yyyymm_time(yr1, yr2, "integer") 
+      end if
+      
       SIA     := month_to_season(SIA, month)
-   
-      SIA     = SIA - avg(SIA({clst:clen}))
+
+      SIA&time = SIA&time/100
+  
+      ;SIA     = SIA - avg(SIA({clst:clen}))
       sd      = stddev(SIA({clst:clen}))
     else 
       clim = new(12,typeof(SIA))
@@ -81,9 +87,16 @@ begin
     end if
 
 
-    SIA := SIA({yrst*100+1:yren*100+12} )
+    SIA := SIA({yrst:yren} )
   end if
 
+
+
+;print years ranked in order 
+;SIA({1988}) = SIA@_FillValue
+pq = dim_pqsort(SIA, 1)
+print(SIA&time(pq))
+exit
 
 ;*********************
 ;plot anoms
@@ -100,10 +113,11 @@ begin
   res@vpHeightF             = 0.5
   res@vpWidthF              = 1.
 
-  res@tiYAxisString         = "monthly sea ice area~C~anomalies (million km~S~2~N~)";"SIA (million km~S~2~N~)"
+  res@tiYAxisString         = "Feb sea ice area (million km~S~2~N~)";"SIA (million km~S~2~N~)"
 
 
-  res@gsnYRefLine           = 0.
+  res@gsnYRefLine           = avg(SIA({clst:clen}));0.
+  res@gsnYRefLineDashPattern = 1
   res@xyLineThicknessF      = 3.
   res@gsnBelowYRefLineColor = "orange"
   res@gsnAboveYRefLineColor = "cyan"
@@ -114,7 +128,7 @@ begin
 
   if (month.ne."ALL") then
     res@trXMaxF         = yren
-    res@trXMinF         = yrst
+    res@trXMinF         = yrst+1
     aplot = gsn_csm_xy(wks,SIA&time,SIA,res)
 
   else

@@ -13,7 +13,7 @@ begin
   clen  = 2008  
 
   diri  = "~/data/NSIDC/"
-  fili  = "NSIDC_SH_totalSIA_monthly_v0"+(/4,2/)+"r00.nc"
+  fili  = "NSIDC_SH_totalSIA_monthly_v0"+(/5,3/)+"r00.nc"
   iNam  = "SIA_cdr"
 
   diro  = "~/plots/ANTARCTIC/2021_SIE_MIN/"
@@ -28,7 +28,7 @@ begin
   
   fi  = addfiles(diri+fili,"r")
   sia = fi[:]->$iNam$  
-
+  sia&time := fi[:]->YYYYMM
 
  
 ;split up into seperate months
@@ -40,6 +40,7 @@ begin
   enmon  = max(sia&time)%100
   enyear = max(sia&time)/100
 
+print((/enyear,enmon/))
 
   ;pad first year
   if (stmon.ne.1) then  

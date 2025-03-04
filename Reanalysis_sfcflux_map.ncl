@@ -8,7 +8,7 @@ begin
   yr     = 2024
   clst   = 1979  ;climatology start date
   clen   = 2008  ;climatology end
-  seas   = [/"MAY-AUG",5,4/] ;season,first month index (1-12),number of months in season)
+  seas   = [/"JUL-AUG",5,4/] ;season,first month index (1-12),number of months in season)
  
 
   latmin = -90.
@@ -20,12 +20,12 @@ begin
   iNam   = (/"slhf","sshf","str","ssr","net"/)
   sign   = (/1,1,1,1,1/)  ;sign convention (to ensure +ve is into ocean
 
-  fili   = src+"_sfcflux_monthly_SH_"+(/"1979-2023","2024"/)+".nc"
+  fili   = src+"_sfcflux_monthly_SH_"+(/"1979-2024.nc"/);","2025.nc"/)
 
   
   dirp   = "plots/"
   filp   = src+"_sfcflux_"+seas[0]+"_"+yr+"_map"
-  pType  = "ps"
+  pType  = "png"
 
 
 
@@ -36,7 +36,11 @@ begin
 ;*****************
 
   fi           = addfiles(diri+fili,"r")
-  time         = cd_calendar(fi[:]->time,-1)
+
+  tAtts        = fi[:]->valid_time
+  time         = toint(tAtts)
+  copy_VarAtts(tAtts, time)
+  time        := cd_calendar(time, -1)
   year         = get_unique_values(time/100)
   
 
@@ -55,18 +59,16 @@ begin
 
   do i = 0, dimsizes(fili)-1
 
-    ttmp := cd_calendar(fi[i]->time,-1)
+    ttmp := toint(fi[i]->valid_time)
+    copy_VarAtts(tAtts, ttmp)
+    ttmp := cd_calendar(ttmp, -1)
     ntim  = dimsizes(ttmp)
 
+
     do v = 0, 3
-      if (any(getfilevarnames(fi[i]).eq."expver")) then
-        tmp  := dim_max_n_Wrap(fi[i]->$iNam(v)$(:,:,{latmin:latmax},:),1)
-      else
-        tmp  := fi[i]->$iNam(v)$(:,{latmin:latmax},:)
-      end if
-    
-      tmp     := short2flt(tmp)
- 
+
+      tmp  := fi[i]->$iNam(v)$(:,{latmin:latmax},:)
+   
       do y = ttmp(0)/100,max(ttmp)/100
         st             = ind(ttmp.eq.y*100+seas[1])
         if (st+seas[2].gt.ntim) then
