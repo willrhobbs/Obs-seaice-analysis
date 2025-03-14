@@ -13,7 +13,7 @@ begin
   latmin = -90.
 
   stdat  = 202203   ;start date (YYYYMM)  
-  endat  = 202501 ;;  ;end date (YYYYMM) 
+  endat  = 202502 ;;  ;end date (YYYYMM) 
   
   ;climatology start and end dates [2004-2018 is the ARGO climatology)
   clst   = 1979
@@ -23,7 +23,7 @@ begin
 ;Obs data ice data
   filoi = "~/data/NSIDC/raw/SH/monthly/sic_pss25_"+array_append_record("197811-202406_v05r00.nc",\
  "2024"+sprinti("%0.2i",ispan(7,12,1))+"_F17_icdr_v03r00.nc", 0)
-filoi := array_append_record(filoi,"~/data/NSIDC/raw/SH/monthly/sic_pss25_202501_F17_icdr_v03r00.nc" ,0)
+filoi := array_append_record(filoi,"~/data/NSIDC/raw/SH/monthly/sic_pss25_2025"+sprinti("%0.2i",ispan(1,endat%100,1))+"_F17_icdr_v03r00.nc" ,0)
 
 
 
@@ -90,7 +90,6 @@ filoi := array_append_record(filoi,"~/data/NSIDC/raw/SH/monthly/sic_pss25_202501
   st   = ind(time.eq.stdat)
   en   = ind(time.eq.endat)
   nmon = en-st+1
-
 
   dimz          = dimsizes(tmp(0,:,:))
   osic          = new((/3,nmon,dimz(0),dimz(1)/), typeof(tmp))
