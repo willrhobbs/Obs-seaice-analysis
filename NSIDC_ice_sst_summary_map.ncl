@@ -12,7 +12,7 @@ begin
 
 
   stdat  = 202101   ;start date (YYYYMM)  
-  endat  = 202502 ;;  ;end date (YYYYMM) 
+  endat  = 202503 ;;  ;end date (YYYYMM) 
   
   ;climatology start and end dates [2004-2018 is the ARGO climatology)
   clst   = 1982

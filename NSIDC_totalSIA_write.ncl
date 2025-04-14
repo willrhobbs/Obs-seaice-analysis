@@ -6,25 +6,26 @@ begin
 
   tstep   = "monthly"
 ;year =     ; only used for daily data
-  version = "v03r00"
+  version = "v05r00"
 
  ; tstep   = "daily"
 ;year = 2024    ; only used for daily data
  ; version = "v02r00"
 
   hemi    = "SH"
-  diri    = "~/data/NSIDC/raw/"+hemi+"/"+tstep+"/"
+diri = "~/gd/NSIDC/monthly_sic/"
+;  diri    = "~/data/NSIDC/raw/"+hemi+"/"+tstep+"/"
 ;diri = "/g/data/gv90/P6_data/NSIDC/G10016_V2/south/daily/"
 ;diri = "/g/data/gv90/P6_data/NSIDC/G02202_V4/south/aggregate/"
 
   src     = (/"cdr"/);,"nsidc_bt"/)
 
   ;grid cell area file (comment out if assumuning 25km equal area
-  Afil    = "~/data/NSIDC/NSIDC0771_CellArea_PS_S25km_v1.0.nc";"/g/data/jk72/wrh581/NSIDC/NSIDC0771_CellArea_PS_S25km_v1.0.nc"
+  Afil    = "~/gd/NSIDC/NSIDC0771_CellArea_PS_S25km_v1.0.nc"; "~/data/NSIDC/NSIDC0771_CellArea_PS_S25km_v1.0.nc";
   aNam    = "cell_area"
 
 
-  diro    = "~/data/NSIDC/";"/g/data/jk72/wrh581/NSIDC/SIE_daily/";
+  diro    = "~/gd/NSIDC/";
   filo    = "NSIDC_"+hemi+"_totalSIA_"+tstep+"_"+version+".nc"
 
 

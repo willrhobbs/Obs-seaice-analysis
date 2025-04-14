@@ -10,11 +10,11 @@ begin
   clst = 1979  ;climatology end
   clen = 2018  ;climatology start
 
-  month = "DJF" ;month to plot (string). 
+  month = "ALL" ;month to plot (string). 
             ;For all months, 'ALL', 
             ;otherwies 3-letter season name (ASO) or  month (JAN, FEB)       ;
 
-  diri = "~/data/NSIDC/"
+  diri = "~/gd/NSIDC/"
   fili = "NSIDC_SH_totalSIA_monthly_"+(/"v05r00.nc","v03r00.nc"/);(/"v04r00.nc","v02r00.nc"/)
   iNam = "SIA_cdr"
 
@@ -75,6 +75,8 @@ begin
   
       ;SIA     = SIA - avg(SIA({clst:clen}))
       sd      = stddev(SIA({clst:clen}))
+
+      SIA      := SIA({yrst:yren})
     else 
       clim = new(12,typeof(SIA))
       sd   = clim
@@ -87,16 +89,16 @@ begin
     end if
 
 
-    SIA := SIA({yrst:yren} )
+    SIA := SIA({yrst*100+1:yren*100+12} )
   end if
 
 
 
 ;print years ranked in order 
 ;SIA({1988}) = SIA@_FillValue
-pq = dim_pqsort(SIA, 1)
-print(SIA&time(pq))
-exit
+;pq = dim_pqsort(SIA, 1)
+;print(SIA&time(pq))
+;exit
 
 ;*********************
 ;plot anoms
@@ -115,8 +117,11 @@ exit
 
   res@tiYAxisString         = "Feb sea ice area (million km~S~2~N~)";"SIA (million km~S~2~N~)"
 
-
-  res@gsnYRefLine           = avg(SIA({clst:clen}));0.
+  if (month.eq."ALL") then
+      res@gsnYRefLine       = 0.
+  else
+      res@gsnYRefLine       = avg(SIA({clst:clen}))
+  end if
   res@gsnYRefLineDashPattern = 1
   res@xyLineThicknessF      = 3.
   res@gsnBelowYRefLineColor = "orange"
