@@ -22,14 +22,8 @@ begin
 
 ;Obs data ice data
   diroi = "~/gd/NSIDC/monthly_sic/"
-  filoi = diroi+"sic_pss25_"+array_append_record("197811-202406_v05r00.nc",\
- "2024"+sprinti("%0.2i",ispan(7,12,1))+"_F17_icdr_v03r00.nc", 0)
-filoi := array_append_record(filoi,diroi+"/sic_pss25_2025"+sprinti("%0.2i",ispan(1,endat%100,1))+"_F17_icdr_v03r00.nc" ,0)
-
-
-
-; "seaice_conc_monthly_"+array_append_record("sh_197811_202406_v04r00.nc",\
-;  "icdr_sh_2024"+sprinti("%0.2i",ispan(7,endat%100,1))+"_f18_v02r00.nc", 0)
+  filoi = diroi+"sic_pss25_"+array_append_record("197811-202412_v05r00.nc",\
+ "2025"+sprinti("%0.2i",ispan(1,endat%100,1))+"_F17_icdr_v03r00.nc" ,0)
   
  oiNam = "cdr_seaice_conc_monthly"
 

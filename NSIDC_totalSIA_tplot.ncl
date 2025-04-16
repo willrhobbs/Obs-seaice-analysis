@@ -10,8 +10,9 @@ begin
   clst = 1979  ;climatology end
   clen = 2018  ;climatology start
 
-  month = "ALL" ;month to plot (string). 
+  month = "ANN" ;month to plot (string). 
             ;For all months, 'ALL', 
+            ;'ANN" for annual-mean
             ;otherwies 3-letter season name (ASO) or  month (JAN, FEB)       ;
 
   diri = "~/gd/NSIDC/"
@@ -51,6 +52,24 @@ begin
     sd        = stddev(SIA({clst:clen}))
     SIA      := SIA({yrst:yren})
 
+  elseif (month.eq."ANN") then
+
+    st       = min(ind(YYYYMM.ge.yr1*100+1))
+    en       = max(ind(YYYYMM.le.yr2*100+12))
+    tmp      = fi[:]->$iNam$(st:en)
+    SIA      = new(yr2-yr1+1,typeof(tmp))
+    SIA!0    = "time"
+    SIA&time = ispan(yr1,yr2,1)
+
+      do yy = yr1, yr2
+         ii := ind(YYYYMM/100.eq.yy)
+         if (dimsizes(ii).lt.12) then
+            continue
+          end if
+          SIA({yy}) = avg(tmp(ii))
+       end do 
+    sd      = stddev(SIA({clst:clen}))
+
   else
     st       = min(ind(fi[:]->YYYYMM.ge.yr1*100+1))
     en       = max(ind(fi[:]->YYYYMM.le.yr2*100+12))
@@ -77,6 +96,7 @@ begin
       sd      = stddev(SIA({clst:clen}))
 
       SIA      := SIA({yrst:yren})
+
     else 
       clim = new(12,typeof(SIA))
       sd   = clim
@@ -115,7 +135,7 @@ begin
   res@vpHeightF             = 0.5
   res@vpWidthF              = 1.
 
-  res@tiYAxisString         = "Feb sea ice area (million km~S~2~N~)";"SIA (million km~S~2~N~)"
+  res@tiYAxisString         = month+" sea ice area (million km~S~2~N~)";"SIA (million km~S~2~N~)"
 
   if (month.eq."ALL") then
       res@gsnYRefLine       = 0.

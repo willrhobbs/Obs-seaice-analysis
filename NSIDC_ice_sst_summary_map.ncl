@@ -23,10 +23,10 @@ begin
 ;Obs data ice data
  ; filoi = "~/data/NSIDC/raw/SH/monthly/sic_pss25_"+\  
 filoi = dirb+"NSIDC/monthly_sic/sic_pss25_"+\
-  array_append_record("197811-202406_v05r00.nc",\
-  "2024"+sprinti("%0.2i",ispan(7,12,1))+"_F17_icdr_v03r00.nc", 0)
+  array_append_record("197811-202412_v05r00.nc",\
+  "2025"+sprinti("%0.2i",ispan(1,endat%100,1))+"_F17_icdr_v03r00.nc", 0)
 
-filoi := array_append_record(filoi,dirb+"NSIDC/monthly_sic/sic_pss25_2025"+sprinti("%0.2i",ispan(1,endat%100,1))+"_F17_icdr_v03r00.nc" , 0)
+
 
   oiNam = "cdr_seaice_conc_monthly"
 

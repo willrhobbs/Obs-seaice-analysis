@@ -6,7 +6,7 @@ begin
 
   tstep   = "monthly"
 ;year =     ; only used for daily data
-  version = "v05r00"
+  ;version = "v05r00"
 
  ; tstep   = "daily"
 ;year = 2024    ; only used for daily data
