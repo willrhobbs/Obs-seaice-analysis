@@ -11,7 +11,7 @@ begin
   latmax = -54.
 
   stdat  = 202209   ;start date (YYYYMM)  
-  endat  = 202312 ;;  ;end date (YYYYMM) 
+  endat  = 202504;;  ;end date (YYYYMM) 
   
   ;climatology start and end dates [2004-2018 is the ARGO climatology)
   clst   = 1979
@@ -19,9 +19,9 @@ begin
 
 
 ;Obs data
-  filoi = "~/data/NSIDC/raw/SH/monthly/seaice_conc_monthly_"+\
-  array_append_record("sh_197811_202306_v04r00.nc",\
-  "icdr_sh_2023"+sprinti("%0.2i",ispan(7,endat%100,1))+"_f18_v02r00.nc",0)
+  diroi = "/g/data/gv90/wrh581/NSIDC/monthly_sic/"
+  filoi = diroi+"sic_pss25_"+array_append_record("197811-202412_v05r00.nc",\
+ "2025"+sprinti("%0.2i",ispan(1,endat%100,1))+"_F17_icdr_v03r00.nc" ,0)
   oiNam = "cdr_seaice_conc_monthly"
 
 
@@ -40,15 +40,17 @@ begin
 ;*************************
 
   ;get time array and sort in time order
- 
-  fi    = addfiles(filoi,"r")
-  time  = cd_calendar(fi[:]->time,-1)
 
-  if (.not.isMonotonic(time)) then
-    pq = dim_pqsort(time, 2)
-    fi = addfiles(filoi(pq),"r")
-    delete(pq)
+  fi    = addfiles(filoi,"r")
+  time = fi[:]->time
+  if (typeof(time).eq."int64") then
+    ttmp  = time
+    time := toint(ttmp)
+    copy_VarAtts(ttmp, time)
+    delete(ttmp)
   end if
+  time  := cd_calendar(time,-1)
+
 
   ;read data
   tmp   = fi[:]->$oiNam$ ;(time,ygrid,xgrid)
@@ -197,10 +199,11 @@ begin
 
     end do
 
+
     ;convert png files to a gif
     CMD = "convert "+dirp+filp+"*.png "+dirp+filp+".gif"
     system(CMD)
- ;   system("rm "+dirp+filp+"*.png")  ;clean up 
+    system("rm "+dirp+filp+"*.png")  ;clean up 
 
   else
 

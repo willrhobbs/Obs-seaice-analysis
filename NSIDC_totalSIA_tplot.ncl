@@ -10,12 +10,12 @@ begin
   clst = 1979  ;climatology end
   clen = 2018  ;climatology start
 
-  month = "ANN" ;month to plot (string). 
+  month = "ALL" ;month to plot (string). 
             ;For all months, 'ALL', 
             ;'ANN" for annual-mean
             ;otherwies 3-letter season name (ASO) or  month (JAN, FEB)       ;
 
-  diri = "~/gd/NSIDC/"
+  diri = "/g/data/gv90/wrh581/NSIDC/"
   fili = "NSIDC_SH_totalSIA_monthly_"+(/"v05r00.nc","v03r00.nc"/);(/"v04r00.nc","v02r00.nc"/)
   iNam = "SIA_cdr"
 

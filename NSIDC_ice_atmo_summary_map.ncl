@@ -13,7 +13,7 @@ begin
   latmin = -90.
 
   stdat  = 202203   ;start date (YYYYMM)  
-  endat  = 202503 ;;  ;end date (YYYYMM) 
+  endat  = 202504 ;;  ;end date (YYYYMM) 
   
   ;climatology start and end dates [2004-2018 is the ARGO climatology)
   clst   = 1979
@@ -21,7 +21,7 @@ begin
 
 
 ;Obs data ice data
-  diroi = "~/gd/NSIDC/monthly_sic/"
+  diroi = "/g/data/gv90/wrh581/NSIDC/monthly_sic/"
   filoi = diroi+"sic_pss25_"+array_append_record("197811-202412_v05r00.nc",\
  "2025"+sprinti("%0.2i",ispan(1,endat%100,1))+"_F17_icdr_v03r00.nc" ,0)
   

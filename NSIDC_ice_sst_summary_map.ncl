@@ -12,13 +12,13 @@ begin
 
 
   stdat  = 202101   ;start date (YYYYMM)  
-  endat  = 202503 ;;  ;end date (YYYYMM) 
+  endat  = 202504 ;;  ;end date (YYYYMM) 
   
   ;climatology start and end dates [2004-2018 is the ARGO climatology)
   clst   = 1982
   clen   = 2011
 
-  dirb   = "/g/data/jk72/wrh581/"
+  dirb   = "/g/data/gv90/wrh581/"
 
 ;Obs data ice data
  ; filoi = "~/data/NSIDC/raw/SH/monthly/sic_pss25_"+\  
@@ -39,7 +39,7 @@ filoi = dirb+"NSIDC/monthly_sic/sic_pss25_"+\
 
 
 ;plot file
-  dirp  = dirb+"/Obs-seaice-analysis/plots/"
+  dirp  = "plots/"
   filp  = "NSIDC_sic_"+osrc+"_sst_map_"+stdat+"-"+endat
   pType = "png"
   if (isAni) then

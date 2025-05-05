@@ -13,7 +13,7 @@ begin
  ; version = "v02r00"
 
   hemi    = "SH"
-diri = "~/gd/NSIDC/monthly_sic/"
+diri = "/g/data/gv90/wrh581/NSIDC/";monthly_sic/"
 ;  diri    = "~/data/NSIDC/raw/"+hemi+"/"+tstep+"/"
 ;diri = "/g/data/gv90/P6_data/NSIDC/G10016_V2/south/daily/"
 ;diri = "/g/data/gv90/P6_data/NSIDC/G02202_V4/south/aggregate/"
@@ -21,11 +21,11 @@ diri = "~/gd/NSIDC/monthly_sic/"
   src     = (/"cdr"/);,"nsidc_bt"/)
 
   ;grid cell area file (comment out if assumuning 25km equal area
-  Afil    = "~/gd/NSIDC/NSIDC0771_CellArea_PS_S25km_v1.0.nc"; "~/data/NSIDC/NSIDC0771_CellArea_PS_S25km_v1.0.nc";
+  Afil    = diri+"NSIDC0771_CellArea_PS_S25km_v1.0.nc"; "~/data/NSIDC/NSIDC0771_CellArea_PS_S25km_v1.0.nc";
   aNam    = "cell_area"
 
 
-  diro    = "~/gd/NSIDC/";
+  diro    = diri
   filo    = "NSIDC_"+hemi+"_totalSIA_"+tstep+"_"+version+".nc"
 
 
@@ -41,7 +41,7 @@ diri = "~/gd/NSIDC/monthly_sic/"
      filo = "NSIDC_"+hemi+"_totalSIA_"+tstep+"_"+year+"_"+version+".nc"
   else
   ;   fili = systemfunc("ls "+diri+"seaice_conc_"+tstep+"_*sh_*_"+version+".nc")
-fili = systemfunc("ls "+diri+"sic_pss25_*_"+version+".nc")
+fili = systemfunc("ls "+diri+"monthly_sic/sic_pss25_*_"+version+".nc")
   end if
 
 

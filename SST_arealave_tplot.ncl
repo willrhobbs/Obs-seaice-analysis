@@ -17,7 +17,7 @@ begin
 ;SST data
   oNam  = "sst"
   osrc  = "OISSTv2"
-  diro  = "../OISST/"
+  diro  = "/g/data/gv90/wrh581/OISST/"
   filo  = "OIv2_SST_1982-2025.nc"
 
 ;output
