@@ -9,18 +9,18 @@ load "~/scripts/NCL/plot_funcs.ncl"
 begin
 
   ;spatial domain
-  sNam   = "SOcean" ; "Weddell"
+  sNam   = "Weddell" ; "SOcean" 
   latmax = -55.
   latmin = -65.
-  lonmin = 0. ; 330.;
-  lonmax = 360. ;20.
+  lonmin = 330.; 0.
+  lonmax = 20. ;360.
   zmin   = 0.
   zmax   = 1000.
 
   
   ;time domain
   stdat  = 200601
-  endat  = 202502
+  endat  = 202504
   clst   = 2006
   clen   = 2018
 
@@ -29,7 +29,7 @@ begin
 
   ;input file 
 src = "EN4"
-  diri   = "/g/data/jk72/wrh581/EN4/"   ;"~/data/RG_ARGO/"
+  diri   = "/g/data/gv90/wrh581/EN4/"   ;"~/data/RG_ARGO/"
 ;  var    = "salinity";"temperature";
   vNam    = var;"ARGO_"+str_upper(var)+"_ANOMALY"
 
