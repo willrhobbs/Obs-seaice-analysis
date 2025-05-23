@@ -13,11 +13,11 @@ begin
 
      ;
 
-  diri = "~/data/NSIDC/"
-  fils = "NSIDC_SH_totalSIA_monthly_"+(/"v05r00.nc","v03r00.nc"/);(/"v04r00.nc","v02r00.nc"/)
+  diri = "/g/data/gv90/wrh581/NSIDC/"
+  fils = "NSIDC_SH_totalSIA_monthly_"+(/"v05r00.nc","v03r00.nc"/)
   sNam = "SIE_cdr"
 
-  filn = "NSIDC_NH_totalSIA_monthly_v03r00.txt"
+  filn = str_sub_str(fils, "SH", "NH")
 
   diro = "plots/"
   filo = "NSIDC_Arctic_vs_Antarctic"
@@ -30,57 +30,73 @@ begin
 ;********************
 
 
+undef("read_data") 
 
-  fi = addfiles(diri+fils, "r")
-  YYYYMM = fi[:]->YYYYMM
+  function read_data(fpath[*]:string, lnam[1]:string)
 
-  st       = ind(fi[:]->YYYYMM.eq.yrst*100+1)
-  en       = ind(fi[:]->YYYYMM.eq.yren*100+12)
-  tmp      = fi[:]->$sNam$(st:en)
-  tmp&time := YYYYMM(st:en)
+  local fi, YYYYMM, st, en, tmp, year, SIA
 
-  
-;annual mean
-  year     = ispan(yrst, yren, 1)
-  SIA_SH      = new(dimsizes(year), typeof(tmp))
-  SIA_SH!0    = "year"
-  SIA_SH&year = year
-  SIA_SH@long_name = "Antarctic"
-  
-  
-  do y = yrst, yren
-    SIA_SH({y}) = avg(tmp({y*100+1:y*100+12}))
-  end do
+  begin
 
-  SIA_SH({1987:1988}) = SIA_SH@_FillValue
+      fi = addfiles(fpath, "r")
 
-;*******************
-;read NH data
-;********************
+      SIA      = fi[:]->$sNam$
+      SIA&time := fi[:]->YYYYMM
 
-  SIA_NH = SIA_SH
-  SIA_NH@long_name = "Arctic"
+      SIA({198712:198801}) = SIA@_FillValue
+       SIA@long_name = lnam
 
-  tmp := readAsciiTable(diri+filn, 13, typeof(SIA_NH), 1)
+      return(SIA)
 
-  do y = yrst, yren
-    ii         = ind(tmp(:,0).eq.y)
-    SIA_NH({y}) = avg(tmp(ii,1:))
-  end do
+    end 
 
-  SIA_NH({1987:1988}) = SIA_NH@_FillValue
+ SIA= [/ read_data(diri+fils, "Antarctic"), \
+         read_data(diri+filn, "Arctic") /]
+
+  ListAppend(SIA, SIA[0] + SIA[1])  ;total
+  SIA[2]@long_name = "Global"
+SIA[2]!0 = "time"
+SIA[2]&time = SIA[0]&time
 
 
 
 ;*****************
-;normalise
+;annual mean
+;********************
+
+
+
+  year     = ispan(yrst, yren, 1)
+  SIAann      = new((/3,dimsizes(year)/), typeof(SIA[0]))
+  SIAann!1    = "year"
+  SIAann&year = year
+     
+  
+  do i = 0, 2
+      do y = yrst, yren
+        SIAann(i,{y}) = avg(SIA[i]({y*100+1:y*100+12}))
+      end do
+  end do
+
+;******************
+;anom
 ;*******************
-    
-;  SIA_SH = (SIA_SH - avg(SIA_SH))/stddev(SIA_SH)
-;  SIA_NH = (SIA_NH - avg(SIA_NH))/stddev(SIA_NH)
+
+
+
+  do i = 0, 2
+      do mInd = 0, 11
+         m = SIA[i]&time(mInd)%100
+
+         clim = avg(SIA[i]({clst*100+m:clen*100+m:12}))
+         SIA[i](mInd::12) = SIA[i](mInd::12) - clim
+      end do
+   end do
+
+
 
 ;*********************
-;plots
+;Annual mean plots
 ;*********************
 
 
@@ -107,8 +123,8 @@ begin
   
 
   res@gsnLeftString = "global total SIE"
-  res@tiYAxisString = "global SIE (milliun km~S~2~N~)"
-  plot(0) = gsn_csm_xy(wks, year, (SIA_SH+SIA_NH), res)
+  res@tiYAxisString = "global SIE (million km~S~2~N~)"
+  plot(0) = gsn_csm_xy(wks, SIAann&year, SIAann(2,:), res)
 
 delete([/res@trXMinF, res@trXMaxF/])
 
@@ -121,26 +137,89 @@ delete([/res@trXMinF, res@trXMaxF/])
   res@tiYAxisString      = "Arctic SIE (million km~S~2~N~)"
   res@tiXAxisString      = "Antarctic SIE (million km~S~2~N~)"
 
-  res@gsnXRefLine       := avg(SIA_SH({:refyear-1}))
-  res@gsnYRefLine        = avg(SIA_NH({:refyear-1}))
+  res@gsnXRefLine       := avg(SIAann(0,{:refyear-1}))
+  res@gsnYRefLine        = avg(SIAann(1,{:refyear-1}))
   res@gsnXRefLineColor   = "black"
 
   res@gsnLeftString = "Arctic vs Antarctic"
 
-  plot(1) = gsn_csm_xy(wks, SIA_SH({:refyear-1}), SIA_NH({:refyear-1}),res)
+  plot(1) = gsn_csm_xy(wks, SIAann(0,{:refyear-1}), SIAann(1,{:refyear-1}),res)
   res@xyMarkerColor = "red"
 
-  res@gsnXRefLine       := avg(SIA_SH({refyear:}))
-  res@gsnYRefLine        = avg(SIA_NH({refyear:}))
+  res@gsnXRefLine       := avg(SIAann(0,{refyear:}))
+  res@gsnYRefLine        = avg(SIAann(1,{refyear:}))
   res@gsnXRefLineColor   = res@xyMarkerColor
     res@gsnYRefLineColor =   res@gsnXRefLineColor  
 
-  oplot =  gsn_csm_xy(wks, SIA_SH({refyear:}), SIA_NH({refyear:}),res)
+  oplot =  gsn_csm_xy(wks, SIAann(0,{refyear:}), SIAann(1,{refyear:}),res)
   overlay(plot(1), oplot)
 
 
   resP      = True
   resP@gsnMaximize= True
+  resP@txString = "Annual"
+  gsn_panel(wks, plot, (/1,2/), resP)
+
+
+  delete(res)
+
+
+;*********************
+;monthly anom plots
+;*********************
+
+
+  res             = True
+  res@gsnDraw       = False
+  res@gsnFrame      = False
+
+  res@gsnLeftString = "global total SIE"
+  res@tiYAxisString = "global SIE anom (million km~S~2~N~)"
+  res@gsnYRefLine   = 0.  
+  res@xyLineThicknessF = 3.
+
+
+;total time plot
+  res@tmXBMode      = "Explicit"
+  res@trXMinF       = 0
+  res@trXMaxF       = dimsizes(SIA[2])-1
+  tdum              = ispan(res@trXMinF, res@trXMaxF, 1)
+  st = min(ind(SIA[2]&time%100.eq.1))
+  res@tmXBValues    = ispan(st, res@trXMaxF, 60)
+  res@tmXBLabels    = ispan( SIA[2]&time(st)/100, yren, 5)  
+  res@tmXBMinorValues     = ispan(st, res@trXMaxF, 12)
+  
+   plot(0) = gsn_csm_xy(wks, tdum, SIA[2], res)
+
+
+  resm               = True  
+  resm@gsnDraw       = False
+  resm@gsnFrame      = False
+
+  resm@xyMarkLineMode     = "Markers"
+  resm@xyMarker           = 16
+  resm@trXMaxF            = 3.5 ;ceil(max((/max(SIA[0]), max(SIA[1])/)))
+  resm@trXMinF            = -3.5 ;floor(min((/min(SIA[0]), min(SIA[1])/)))
+  resm@trYMinF            = resm@trXMinF
+  resm@trYMaxF            = resm@trXMaxF
+  resm@tiYAxisString      = "Arctic SIE (million km~S~2~N~)"
+  resm@tiXAxisString      = "Antarctic SIE (million km~S~2~N~)"
+
+  resm@gsnXRefLine       = 0.
+  resm@gsnYRefLine        = 0.
+  
+
+  resm@gsnLeftString = "Arctic vs Antarctic"
+
+  plot(1) = gsn_csm_xy(wks, SIA[0], SIA[1],resm)
+
+ ; refyear = 2025
+  ii      = ind(SIA[0]&time/100.ge.refyear)
+  resm@xyMarkerColor = "red"
+   oplot = gsn_csm_xy(wks, SIA[0](ii), SIA[1](ii),resm)
+   overlay(plot(1), oplot)
+
+  resP@txString = "Monthly anomalies ("+clst+"-"+clen+" climatology)"
   gsn_panel(wks, plot, (/1,2/), resP)
 
  

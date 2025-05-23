@@ -4,29 +4,23 @@
 begin
 
 
-  tstep   = "monthly"
+  tstep   = "monthly"  ;"daily"
 ;year =     ; only used for daily data
-  ;version = "v05r00"
+  ;version = "v05r00" ; "v03r00"
 
- ; tstep   = "daily"
-;year = 2024    ; only used for daily data
- ; version = "v02r00"
-
-  hemi    = "SH"
-diri = "/g/data/gv90/wrh581/NSIDC/";monthly_sic/"
-;  diri    = "~/data/NSIDC/raw/"+hemi+"/"+tstep+"/"
-;diri = "/g/data/gv90/P6_data/NSIDC/G10016_V2/south/daily/"
-;diri = "/g/data/gv90/P6_data/NSIDC/G02202_V4/south/aggregate/"
+;  hemi    = "S"  ;S or N
+ 
+  diri = "/g/data/gv90/wrh581/NSIDC/"
 
   src     = (/"cdr"/);,"nsidc_bt"/)
 
   ;grid cell area file (comment out if assumuning 25km equal area
-  Afil    = diri+"NSIDC0771_CellArea_PS_S25km_v1.0.nc"; "~/data/NSIDC/NSIDC0771_CellArea_PS_S25km_v1.0.nc";
+  Afil    = diri+"NSIDC0771_CellArea_PS_"+hemi+"25km_v1.0.nc" 
   aNam    = "cell_area"
 
 
   diro    = diri
-  filo    = "NSIDC_"+hemi+"_totalSIA_"+tstep+"_"+version+".nc"
+  filo    = "NSIDC_"+hemi+"H_totalSIA_"+tstep+"_"+version+".nc"
 
 
 ;******************
@@ -36,12 +30,13 @@ diri = "/g/data/gv90/wrh581/NSIDC/";monthly_sic/"
 ;for daily data, only process the listed year
 ;for monthly data do all files at once
 
+
   if (tstep.eq."daily") then
      fili = systemfunc("ls "+diri+"seaice_conc_"+tstep+"_*sh_"+year+"*_"+version+".nc") 	
      filo = "NSIDC_"+hemi+"_totalSIA_"+tstep+"_"+year+"_"+version+".nc"
   else
   ;   fili = systemfunc("ls "+diri+"seaice_conc_"+tstep+"_*sh_*_"+version+".nc")
-fili = systemfunc("ls "+diri+"monthly_sic/sic_pss25_*_"+version+".nc")
+     fili = systemfunc("ls "+diri+"monthly_sic/sic_ps"+str_lower(hemi)+"25_*_"+version+".nc")
   end if
 
 
