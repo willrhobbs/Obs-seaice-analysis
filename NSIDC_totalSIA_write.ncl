@@ -6,7 +6,7 @@ begin
 
   tstep   = "monthly"  ;"daily"
 ;year =     ; only used for daily data
-  ;version = "v05r00" ; "v03r00"
+  version = "v03r00" ; "v05r00"
 
 ;  hemi    = "S"  ;S or N
  

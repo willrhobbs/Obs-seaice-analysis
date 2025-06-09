@@ -60,6 +60,7 @@ begin
 
   end do
 
+
 ;********************
 ;plot anoms
 ;**********************
@@ -94,9 +95,9 @@ begin
   res@trXMaxF         = nyr*12
   res@trXMinF         = 1
   res@tmXBMode        = "Explicit"
-  res@tmXBValues      = ispan(1, res@trXMaxF,60)
-  res@tmXBLabels      = ispan(yrst,yren,5)
-  res@tmXBMinorValues = ispan(1, res@trXMaxF,12)
+  res@tmXBValues      = ispan(ind(sst&time.eq.198502), res@trXMaxF,60)
+  res@tmXBLabels      = ispan(1985,yren,5)
+  res@tmXBMinorValues = ispan(min(ind(sst&time%100.eq.2)), res@trXMaxF,12)
 
   aplot = gsn_csm_xy(wks,ispan(1,dimsizes(sst),1),sst,res)
 
