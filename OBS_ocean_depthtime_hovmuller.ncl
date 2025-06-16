@@ -19,7 +19,7 @@ begin
 
   
   ;time domain
-  stdat  = 200601
+  stdat  = 202001
   endat  = 202504
   clst   = 2006
   clen   = 2018
@@ -28,12 +28,23 @@ begin
 
 
   ;input file 
-src = "EN4"
-  diri   = "/g/data/gv90/wrh581/EN4/"   ;"~/data/RG_ARGO/"
+;src = "EN4"
+;  diri   = "/g/data/gv90/wrh581/EN4/"   ;"~/data/RG_ARGO/"
 ;  var    = "salinity";"temperature";
-  vNam    = var;"ARGO_"+str_upper(var)+"_ANOMALY"
+;  vNam    = var;"ARGO_"+str_upper(var)+"_ANOMALY"
+;  fili = systemfunc("ls "+diri+"EN.4.2.2.?.analysis.l09.;;{"+str_join(yyyymm_time(stdat/100,endat/100,"integer"),",")+"}.nc 2>/dev/null")
+;dlat = 1.
+;dlon = 1.
 
-  fili = systemfunc("ls "+diri+"EN.4.2.2.?.analysis.l09.{"+str_join(yyyymm_time(stdat/100,endat/100,"integer"),",")+"}.nc 2>/dev/null")
+src = "ORAS5"
+;  var    = "vosaline";"votemper";
+  diri   = "/g/data/gv90/wrh581/"+src+"/"+var+"/"   
+  vNam    = var
+  fili = systemfunc("ls "+diri+"ORAS5_"+var+"_monthly_SOcean_{"+str_join(ispan(stdat/100,endat/100,1),",")+"}.nc 2>/dev/null")
+dlon = 0.25
+dlat = 0.12
+
+
  
 ;"RG_ArgoClim_"+var+"_200401-"+endat+".nc"
 
@@ -49,9 +60,33 @@ src = "EN4"
 
 
   fi    = addfiles(fili,"r")
-  time  = cd_calendar(fi[:]->time,-1)
+  dNams = getfilevardims(fi[0],var)
 
-  tmp  = fi[:]->$vNam$(:,{zmin:zmax},{latmin:latmax},:)
+  time  = cd_calendar(fi[:]->$dNams(0)$,-1)
+
+lon = fi[0]->nav_lon(0,:1439)
+print(lon)
+print(isMonotonic(lon))
+exit
+
+  if (src.eq."ORAS5") then    ; tripolar grid
+     tmp  = fi[:]->$vNam$(:,{zmin:zmax},:,:1439)
+    tmp!2 = "lat"
+    tmp&lat := fi[0]->nav_lat(:,0)
+    tmp!3 = "lon"
+    tmp&lon := fi[0]->nav_lon(0,:1439)
+    tmp := tmp(:,:,{latmin:latmax},:)
+
+tmp = dim_pqsor
+
+
+  else
+      ;rectilinear grid
+       tmp  = fi[:]->$vNam$(:,{zmin:zmax},{latmin:latmax},:)
+  end if
+
+
+
 
   if (lonmin.lt.lonmax) then
     tmp := tmp(:,:,:,{lonmin:lonmax})
@@ -59,9 +94,11 @@ src = "EN4"
     tmp(:,:,:,{lonmax:lonmin}) = tmp@_FillValue
   end if
 
-  dlat = 1.
+
+
+
+
   dy   = yresCalc(dlat)
-  dlon = 1.
   dx   = xresCalc(dlon, tmp&$tmp!2$)
   A    = conform(tmp(0,0,:,:), dx*dy, 0)
   

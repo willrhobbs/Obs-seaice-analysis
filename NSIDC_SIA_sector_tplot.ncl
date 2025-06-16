@@ -5,27 +5,29 @@ load "~/scripts/NCL/ncl_funcs.ncl"
 
 begin
 
-  yrst = 2006
-  yren = 2023
+  yrst = 1980
+  yren = 2024
 
 
   seas = "MJJ" ;season name 
 
 
-  sNam = (/"Circum","Ross-Am","Weddell-KH","Bell"/)
-  xmin = (/0.,150.,327.,277./)
-  xmax = (/360.,270.,90.,295./)
+;  sNam = (/"Circum","Ross-Am","Weddell-KH","Bell"/)
+;  xmin = (/0.,150.,327.,277./)
+;  xmax = (/360.,270.,90.,295./)
+
+  sNam = (/"Weddell", "Bellingshausen"/)
+  xmin = (/327., 277./)
+  xmax = (/10., 295./)
 
 
 
-
-
-  diri = "~/data/NSIDC/"
-  fili = "NSIDC_SH_icearea_"+(/"v04r00_197811-202312.nc",\
-         "v02r00_202401-202406.nc"/)
+  diri = "/g/data/gv90/wrh581/NSIDC/"
+  fili = "NSIDC_SH_icearea_"+(/"v05r00_197811-202412.nc",\
+         "v03r00_202501-202505.nc"/)
   iNam = "SIA"
 
-  diro  = "~/plots/ANTARCTIC/NSIDC/"
+  diro  = "plots/"
   filo  = "NSIDC_"+iNam+"_sector_"+seas
   oType = "png"
 

@@ -17,10 +17,10 @@ begin
   src  = "cdr"
   ;version = "v02r00"
   pole = "SH"
-  diri  = "~/data/NSIDC/raw/"+pole+"/monthly/"
+  diri  = "/g/data/gv90/wrh581/NSIDC/"
   
   ;grid cell area file (comment out if assumuning 25km equal area
-  Afil    = "~/data/NSIDC/NSIDC0771_CellArea_PS_S25km_v1.0.nc"
+  Afil    = diri+"NSIDC0771_CellArea_PS_S25km_v1.0.nc"
   aNam    = "cell_area"
 
  if (pole.eq."SH") then
@@ -29,7 +29,7 @@ begin
    ymax = -30.5
    nlat = 58
   ; fili = systemfunc("ls "+diri+"seaice_conc_monthly_*sh_*_"+version+".nc")
- fili = systemfunc("ls "+diri+"sic_pss25_*_"+version+".nc")
+ fili = systemfunc("ls "+diri+"monthly_sic/sic_pss25_*_"+version+".nc")
  else
    ymin = 45.5
    ymax = 89.5
@@ -40,7 +40,7 @@ begin
 
 
  ;output file name
-  diro = "~/data/NSIDC/"
+  diro = diri
 
 
 
@@ -117,7 +117,7 @@ begin
     lat2d = ftmp->latitude
     lon2d = ftmp->longitude 
   elseif (version.eq."v03r00") then
-    ftmp  = systemfunc("ls "+diri+"sic_pss25_*_v05r00.nc")
+    ftmp  = systemfunc("ls "+diri+"monthly_sic/sic_pss25_*_v05r00.nc")
     ftmp := addfile(ftmp(0),"r")
     lat2d = ftmp->latitude
     lon2d = ftmp->longitude 
