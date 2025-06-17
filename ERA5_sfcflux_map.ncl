@@ -5,10 +5,10 @@
 
 begin
 
-  yr     = 2024
+  yr     = 2025
   clst   = 1979  ;climatology start date
   clen   = 2008  ;climatology end
-  seas   = [/"MAY-SEP",5,5/] ;season,first month index (1-12),number of months in season)
+  seas   = [/"MAR-MAY",3,3/] ;season,first month index (1-12),number of months in season)
  
 
   latmin = -90.
@@ -16,11 +16,11 @@ begin
 
 
   src    = "ERA5"
-  diri   = "~/data/REANALYSIS/"+src+"/"
+  diri   = "/g/data/gv90/wrh581/"+src+"/"
   iNam   = (/"slhf","sshf","str","ssr","net"/)
   sign   = (/1,1,1,1,1/)  ;sign convention (to ensure +ve is into ocean
 
-  fili   = src+"_sfcflux_monthly_SH_"+(/"1979-2023","2024"/)+".nc"
+  fili   = src+"_sfcflux_monthly_SH_"+(/"1979-2024","2025"/)+".nc"
 
   
   dirp   = "plots/"
@@ -37,7 +37,21 @@ begin
 
   fi           = addfiles(diri+fili,"r")
 
-  year         = ispan(fi[:]->date(0)/10000, max(fi[:]->date)/10000, 1)
+
+
+;convert time *untile ERA5 decide to change it again...)
+    dNams = getfilevardims(fi[0], iNam(0))
+  tAtts = fi[:]->$dNams(0)$
+  time := toint(fi[:]->$dNams(0)$)
+  copy_VarAtts(tAtts, time)
+
+
+  date = cd_calendar(time, -1)
+
+
+
+
+  year         = ispan(date(0)/100, max(date)/100, 1)
   lat          = fi[0]->latitude({latmin:latmax})
   lon          = fi[0]->longitude
 
@@ -50,8 +64,7 @@ begin
   var!3        = "lon"
   var&lon      = lon
 
-  ttmp  = fi[:]->date/100  ;date (YYYYMM format, eliminates trailing DD)
-  ntim  = dimsizes(ttmp)
+  ntim  = dimsizes(date)
 
 
   do v = 0, 3
@@ -59,8 +72,8 @@ begin
     tmp  := fi[:]->$iNam(v)$(:,{latmin:latmax},:)
    
       
-    do y = ttmp(0)/100,max(ttmp)/100
-      st             = ind(ttmp.eq.y*100+seas[1])
+    do y = year(0),max(year)
+      st             = ind(date.eq.y*100+seas[1])
       if (st+seas[2].gt.ntim) then
         break
       end if
