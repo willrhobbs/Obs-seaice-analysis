@@ -12,13 +12,13 @@ begin
   clst  = 1979
   clen  = 2008  
 
-  diri  = "~/data/NSIDC/"
+  diri  = "/g/data/gv90/wrh581/NSIDC/"
   fili  = "NSIDC_SH_totalSIA_monthly_v0"+(/5,3/)+"r00.nc"
   iNam  = "SIA_cdr"
 
-  diro  = "~/plots/ANTARCTIC/2021_SIE_MIN/"
+  diro  = "plots/"
   filo  = "SIA_anoms_tplot_bymonth"
-  oType = "X11"
+  oType = "png"
 
 
 

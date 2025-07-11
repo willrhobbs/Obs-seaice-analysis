@@ -6,18 +6,20 @@ load "~/scripts/NCL/ncl_funcs.ncl"
 begin
 
   yrst = 1979
-  yren = 2025
+ ; yren = 2025
   clst = 1979  ;climatology end
   clen = 2008  ;climatology start
 
-  refyear = (/2022, 2023,2024, 2025/)  ;years to highlight
+refyear = yren
 
-  diri = "~/data/NSIDC/"
+ ; refyear = (/2023,2024, 2025/)  ;years to highlight
+
+  diri = "/g/data/gv90/wrh581/NSIDC/"
   fili = "NSIDC_SH_totalSIA_monthly_"+(/"v05r00.nc","v03r00.nc"/)
   iNam = "SIE_cdr"
 
   diro = "plots/"
-  filo = "NSIDC_"+iNam+"_monthly_anoms_byyear"
+  filo = max(refyear)+"_anom" ;"NSIDC_"+iNam+"_monthly_anoms_byyear"
 
   oType = "png"
 
@@ -82,8 +84,8 @@ begin
 
   res@tiYAxisString         = "Sea ice extent anomaly (million km~S~2~N~)"
   res@gsnYRefLine           = 0.
-  res@xyLineThicknessF      = 3.
-  res@xyLineColor           = "gray"
+  res@xyLineThicknessF      = 2.
+  res@xyLineColor           = "gray38"
   res@xyMonoDashPattern     = True
  
 ;  res@gsnRightString        = "(clim = "+clst+"-"+clen+")"
@@ -99,9 +101,9 @@ begin
 
   aplot = gsn_csm_xy(wks,ispan(1,12,1),SIA_ym,res)
 
-  res@xyLineThicknessF      = 5.
-  res@xyLineColors          = (/"orange","orange3","orangered","orangered4"/)
-  res@pmLegendDisplayMode = "Always"
+  res@xyLineThicknessF      = 6.
+  res@xyLineColor          = "red2";(/"orange","orange3","orangered","orangered4"/)
+  res@pmLegendDisplayMode = "Never"
   res@xyExplicitLegendLabels = refyear
   res@pmLegendOrthogonalPosF = -1.23 
   res@pmLegendParallelPosF = .9
