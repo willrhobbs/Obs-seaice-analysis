@@ -13,7 +13,7 @@ begin
   latmin = -90.
 
   stdat  = 202203   ;start date (YYYYMM)  
-  endat  = 202507 ;;  ;end date (YYYYMM) 
+  endat  = 202508 ;;  ;end date (YYYYMM) 
   
   ;climatology start and end dates [2004-2018 is the ARGO climatology)
   clst   = 1979
@@ -36,6 +36,10 @@ diri   = "/g/data/gv90/wrh581/"
   filoa = (/asrc+"_msl_monthly_SH_1979-2024.nc"\
            ,asrc+"_msl_monthly_SH_2025.nc"/)
 
+
+
+ ;   dira = "/g/data/rt52/era5/single-levels/monthly-averaged/"+oaNam/  ;rt52 data, doesn't get updated very often though
+ ;   filoa = system("ls "+dira+"
 
 
 
