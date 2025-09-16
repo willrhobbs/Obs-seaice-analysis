@@ -5,10 +5,10 @@
 
 begin
 
-  yr     = 2024
+  yr     = 2025
   clst   = 1979  ;climatology start date
   clen   = 2008  ;climatology end
-  seas   = [/"JUL-AUG",5,4/] ;season,first month index (1-12),number of months in season)
+  seas   = [/"MAR-AUG",3,6/] ;season,first month index (1-12),number of months in season)
  
 
   latmin = -90.
@@ -16,11 +16,11 @@ begin
 
 
   src    = "ERA5"
-  diri   = "~/data/REANALYSIS/"+src+"/"
+  diri   = "/g/data/gv90/wrh581/"+src+"/"
   iNam   = (/"slhf","sshf","str","ssr","net"/)
   sign   = (/1,1,1,1,1/)  ;sign convention (to ensure +ve is into ocean
 
-  fili   = src+"_sfcflux_monthly_SH_"+(/"1979-2024.nc"/);","2025.nc"/)
+  fili   = src+"_sfcflux_monthly_SH_"+(/"1979-2024.nc","2025.nc"/)
 
   
   dirp   = "plots/"
@@ -99,7 +99,7 @@ begin
   var  = var/(60.^2 * 24)   
 
 
-
+printVarSummary(var)
 
 
 ;*******************
