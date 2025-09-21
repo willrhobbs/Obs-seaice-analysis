@@ -1,5 +1,5 @@
-load "~/scripts/NCL/ncl_funcs.ncl"
-load "~/scripts/NCL/plot_funcs.ncl"
+load "ncl_funcs.ncl"
+load "plot_funcs.ncl"
 ;for given time range, calculate and plot climatological mean SIC,
 ;from monthly obs
 
