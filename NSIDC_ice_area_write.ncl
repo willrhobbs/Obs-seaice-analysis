@@ -1,6 +1,6 @@
 load "$NCARG_ROOT/lib/ncarg/nclscripts/csm/contributed.ncl"
 load "$NCARG_ROOT/lib/ncarg/nclscripts/esmf/ESMF_regridding.ncl"
-load "~/scripts/NCL/ncl_funcs.ncl"
+load "ncl_funcs.ncl"
 
 
 ;write integrated SH ice area by longitude

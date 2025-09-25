@@ -1,4 +1,4 @@
-load "~/scripts/NCL/ncl_funcs.ncl"
+load "ncl_funcs.ncl"
 load "$NCARG_ROOT/lib/ncarg/nclscripts/contrib/time_axis_labels.ncl"
 
 ;read Antarctic total SIA, 

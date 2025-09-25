@@ -1,4 +1,4 @@
-load "~/scripts/NCL/ncl_funcs.ncl"
+load "ncl_funcs.ncl"
 
 ;read Antarctic total SIA, 
 ;plot anoms with a single line for each year

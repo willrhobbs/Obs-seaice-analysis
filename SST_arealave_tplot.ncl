@@ -1,4 +1,4 @@
-load "~/scripts/NCL/ncl_funcs.ncl"
+load "ncl_funcs.ncl"
 
 ;timeplot of areal-mean monthly sst anomaly for given domain
 
@@ -130,7 +130,6 @@ begin
     gsn_panel(wks, (/aplot , map/), (/1,2/),resP)
    
 
-exit
 
 ;**************************
 ;plot standardized anoms

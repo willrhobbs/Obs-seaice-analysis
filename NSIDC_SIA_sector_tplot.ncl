@@ -1,4 +1,4 @@
-load "~/scripts/NCL/ncl_funcs.ncl"
+load "ncl_funcs.ncl"
 
 
 
