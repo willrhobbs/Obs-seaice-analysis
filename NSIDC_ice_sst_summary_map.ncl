@@ -164,6 +164,9 @@ filoi = dirb+"NSIDC/monthly_sic/sic_pss25_"+\
   res@cnFillMode             = "RasterFill" ;Raster fill necessary for high-res
   res@cnLevelSelectionMode   = "ManualLevels"
   res@lbLabelBarOn           = True
+  res@lbTitleString       = "Monthly SST Anomaly (degree C) from OISST data"   ; <-- THIS is the colorbar label
+  res@lbTitleFontHeightF  = 0.015
+  res@lbTitlePosition     = "Bottom"
   res@cnInfoLabelOn          = False
   res@cnLineLabelsOn         = "False"
   res@gsnLeftString          = ""
@@ -192,6 +195,7 @@ filoi = dirb+"NSIDC/monthly_sic/sic_pss25_"+\
   ires@gsnFrame              = False
   ires@trGridType            = "TriangularMesh"
   ires@cnLineLabelsOn        = False
+  ;ires@cnLineLabelString = "Climatological Ice Edge" ; DOESNT WORK
   ires@cnInfoLabelOn         = False
   ires@cnLineThicknessF      = 5.
   ires@cnLevelSelectionMode  = "ExplicitLevels"
@@ -230,6 +234,7 @@ filoi = dirb+"NSIDC/monthly_sic/sic_pss25_"+\
 
     ;month ice edge
     ires@cnLineColor           = "violet"
+    ;ires@cnLineLabelString = "Monthly Ice Edge"
     iplot2            = gsn_csm_contour(wks,sic(1,:,:) ,ires)
     overlay(plt,iplot2)
 
@@ -250,8 +255,15 @@ filoi = dirb+"NSIDC/monthly_sic/sic_pss25_"+\
   if (isAni) then
 
     do mm = 0, nmon-1
-      res@tiMainString = sst&time(mm)
+      res@tiMainString = sst&time(mm) ;OLD VERSION
 
+    ; Build pretty title
+ ;   tval  = sst&time(mm)
+ ;   year  = tval / 100
+  ;  month = tval - year*100
+  ;  res@tiMainString = sprinti("Sea Ice & SST maps for %s %04i", month_name(month-1), year) ; THIS LINE DOESNT WORK
+
+    ;--- Draw overlay plot (SST + ice edges) ---
       plot = overlay_plot(osic(:,mm,:,:),sst(mm,:,:))  ;obs
       draw(plot)
       frame(wks)
@@ -261,7 +273,7 @@ filoi = dirb+"NSIDC/monthly_sic/sic_pss25_"+\
     ;convert png files to a gif
     CMD = "convert "+dirp+filp+"*.png "+dirp+filp+".gif"
     system(CMD)
-    system("rm "+dirp+filp+"*.png")  ;clean up 
+    ;system("rm "+dirp+filp+"*.png")  ; remove monthly individual maps = clean up 
 
   else
 
