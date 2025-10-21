@@ -10,7 +10,7 @@ begin
   clst = 1979  ;climatology end
   clen = 2018  ;climatology start
 
-  month = "ALL" ;month to plot (string). 
+  month = "FEB" ;month to plot (string). 
             ;For all months, 'ALL', 
             ;'ANN" for annual-mean
             ;otherwies 3-letter season name (ASO) or  month (JAN, FEB)       ;
@@ -109,16 +109,16 @@ begin
     end if
 
 
-    SIA := SIA({yrst*100+1:yren*100+12} )
+  ;  SIA := SIA({yrst*100+1:yren*100+12} )
   end if
 
-
+printMinMax(SIA&time, True)
 
 ;print years ranked in order 
-;SIA({1988}) = SIA@_FillValue
-;pq = dim_pqsort(SIA, 1)
-;print(SIA&time(pq))
-;exit
+SIA({1988}) = SIA@_FillValue
+pq = dim_pqsort(SIA, 1)
+print(SIA&time(pq))
+exit
 
 ;*********************
 ;plot anoms

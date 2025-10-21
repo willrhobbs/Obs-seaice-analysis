@@ -22,16 +22,13 @@ begin
 
 ;Obs data ice data
   isrc = "OSISAF"
-  diroi = diri+isrc+"/"; monthly_sic/"
+  diroi = dirb+isrc+"/"; monthly_sic/"
   filoi = systemfunc("ls "+diroi+"ice_conc_sh_ease2-250_*.nc")
 
 ;  filoi = diroi+"sic_pss25_"+array_append_record("197811-202412_v05r00.nc",\
 ; "2025"+sprinti("%0.2i",ispan(1,endat%100,1))+"_F17_icdr_v03r00.nc" ,0)
   
- oiNam = "ice_conc" ;"cdr_seaice_conc_monthly"
-
-
-  oiNam = "cdr_seaice_conc_monthly"
+ oiNam = "ice_conc" ;"cdr_seaice_conc_monthly" ; "cdr_seaice_conc_monthly"
 
 
 ;SST data
@@ -281,7 +278,7 @@ begin
     ;convert png files to a gif
     CMD = "convert "+dirp+filp+"*.png "+dirp+filp+".gif"
     system(CMD)
-    ;system("rm "+dirp+filp+"*.png")  ; remove monthly individual maps = clean up 
+    system("rm "+dirp+filp+"*.png")  ; remove monthly individual maps = clean up 
 
   else
 
