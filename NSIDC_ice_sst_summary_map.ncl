@@ -52,8 +52,10 @@ begin
 ;read obs SIC data 
 ;*************************
 
+
+
   ;get time array and sort in time order
- 
+
   fi    = addfiles(filoi,"r")
   time = fi[:]->time
   if (typeof(time).eq."int64") then
@@ -62,7 +64,10 @@ begin
     copy_VarAtts(ttmp, time)
     delete(ttmp)
   end if
-  time := cd_calendar(time,-1)
+  time  := cd_calendar(time,-1)
+
+
+
 
   if (.not.isMonotonic(time)) then
     pq = dim_pqsort(time, 2)
@@ -72,37 +77,50 @@ begin
 
   ;read data
   tmp   = fi[:]->$oiNam$ ;(time,ygrid,xgrid)
-  tmp  := byte2flt(tmp)
 
+   if (isbyte(tmp)) then
+      tmp  := byte2flt(tmp)
+   end if 
+
+;correct units
+  if (isrc.eq."OSISAF") then
+     tmp := int2flt(tmp) 
+     tmp = tmp * 1.e-4
+  end if
+
+  tmp&time := time
 
   ;get climatology and anom
   st   = ind(time.eq.stdat)
   en   = ind(time.eq.endat)
   nmon = en-st+1
 
-
   dimz          = dimsizes(tmp(0,:,:))
   osic          = new((/2,nmon,dimz(0),dimz(1)/), typeof(tmp))
-  osic(1,:,:,:) = tmp(st:en,:,:)   ;anomaly period
+  osic(1,:,:,:) = tmp({stdat:endat},:,:)   ;anomaly period
   
 ;climatology
-  mInd =(/ ind(time.eq.clst*100+(stdat%100)), ind(time.eq.clen*100+(stdat%100))/)
+  mInd = stdat%100
 
   do i = 0, nmon-1
-    osic(0,i,:,:) = dim_avg_n(tmp(mInd(0):mInd(1):12,:,:),0)
-    mInd          = mInd+1 
+
+    ;OSISAF doesn't have a monthly mean for Dec 1987 (sensibly) so get correct time indeces else 
+    ;climatology is biased
+    clInd := ind(time%100.eq.mInd.and.time/100.ge.clst.and.time/100.le.clen)
+    osic(0,i,:,:) = dim_avg_n(tmp(clInd,:,:),0)
+
+    if (mInd.eq.12) then
+      mInd = 1
+    else
+      mInd         = mInd+1
+    end if 
   end do
+
 
 
 ;add coords
   osic@lat2d  = fi[0]->lat;itude
   osic@lon2d  = fi[0]->lon;gitude
-
-;correct units
-  if (max(osic).eq.100.) then
-     osic = osic/100.
-  end if
-
 
 
 ;******************
@@ -124,7 +142,7 @@ begin
   if (isAnom) then
 
     nmon  = dimsizes(sst(:,0,0))
-    mInd =(/ ind(tmp&time.eq.clst*100+(stdat%100)), ind(tmp&time.eq.clen*100+(stdat%100))/)
+    mInd :=(/ ind(tmp&time.eq.clst*100+(stdat%100)), ind(tmp&time.eq.clen*100+(stdat%100))/)
  
     do i = 0, nmon-1
       clim         = dim_avg_n(tmp(mInd(0):mInd(1):12,:,:),0)

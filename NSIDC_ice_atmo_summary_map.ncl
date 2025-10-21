@@ -76,6 +76,7 @@ diri   = "/g/data/gv90/wrh581/"
 
 
 
+
   if (.not.isMonotonic(time)) then
     pq = dim_pqsort(time, 2)
     fi = addfiles(filoi(pq),"r")
@@ -84,9 +85,18 @@ diri   = "/g/data/gv90/wrh581/"
 
   ;read data
   tmp   = fi[:]->$oiNam$ ;(time,ygrid,xgrid)
-  tmp  := byte2flt(tmp)
-  tmp&time := time
 
+   if (isbyte(tmp)) then
+      tmp  := byte2flt(tmp)
+   end if 
+
+;correct units
+  if (isrc.eq."OSISAF") then
+     tmp := int2flt(tmp) 
+     tmp = tmp * 1.e-4
+  end if
+
+  tmp&time := time
 
   ;get climatology and anom
   st   = ind(time.eq.stdat)
@@ -95,13 +105,17 @@ diri   = "/g/data/gv90/wrh581/"
 
   dimz          = dimsizes(tmp(0,:,:))
   osic          = new((/3,nmon,dimz(0),dimz(1)/), typeof(tmp))
-  osic(1,:,:,:) = tmp(st:en,:,:)   ;anomaly period
+  osic(1,:,:,:) = tmp({stdat:endat},:,:)   ;anomaly period
   
 ;climatology
   mInd = stdat%100
 
   do i = 0, nmon-1
-    osic(0,i,:,:) = dim_avg_n(tmp({(clst*100+mInd):(clen*100+mInd):12},:,:),0)
+
+    ;OSISAF doesn't have a monthly mean for Dec 1987 (sensibly) so get correct time indeces else 
+    ;climatology is biased
+    clInd := ind(time%100.eq.mInd.and.time/100.ge.clst.and.time/100.le.clen)
+    osic(0,i,:,:) = dim_avg_n(tmp(clInd,:,:),0)
 
     if (mInd.eq.12) then
       mInd = 1
@@ -119,12 +133,6 @@ diri   = "/g/data/gv90/wrh581/"
 ;add coords
   osic@lat2d  = fi[0]->lat;itude
   osic@lon2d  = fi[0]->lon;gitude
-
-
-;correct units
-  if (max(osic).eq.100.) then
-     osic = osic/100.
-  end if
 
 
 ;******************
