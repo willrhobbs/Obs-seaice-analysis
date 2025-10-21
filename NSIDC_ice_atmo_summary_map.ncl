@@ -12,7 +12,7 @@ begin
   latmax = -50.
   latmin = -90.
 
-  stdat  = 202203   ;start date (YYYYMM)  
+  stdat  = 202302   ;start date (YYYYMM)  
   endat  = 202508 ;;  ;end date (YYYYMM) 
   
   ;climatology start and end dates [2004-2018 is the ARGO climatology)
@@ -21,11 +21,14 @@ begin
 
 diri   = "/g/data/gv90/wrh581/"
 ;Obs data ice data
-  diroi = diri+"NSIDC/monthly_sic/"
-  filoi = diroi+"sic_pss25_"+array_append_record("197811-202412_v05r00.nc",\
- "2025"+sprinti("%0.2i",ispan(1,endat%100,1))+"_F17_icdr_v03r00.nc" ,0)
+  isrc = "OSISAF"
+  diroi = diri+isrc+"/"; monthly_sic/"
+  filoi = systemfunc("ls "+diroi+"ice_conc_sh_ease2-250_*.nc")
+
+;  filoi = diroi+"sic_pss25_"+array_append_record("197811-202412_v05r00.nc",\
+; "2025"+sprinti("%0.2i",ispan(1,endat%100,1))+"_F17_icdr_v03r00.nc" ,0)
   
- oiNam = "cdr_seaice_conc_monthly"
+ oiNam = "ice_conc" ;"cdr_seaice_conc_monthly"
 
 
 ;atmo data
@@ -45,7 +48,7 @@ diri   = "/g/data/gv90/wrh581/"
 
 ;plot file
   dirp  = "plots/"
-  filp  = "NSIDC_sic_"+asrc+"_psl_map_"+stdat+"-"+endat
+  filp  = isrc+"_sic_"+asrc+"_psl_map_"+stdat+"-"+endat
   pType = "png"
   if (isAni) then
     filp  = filp+"_ani"
@@ -114,9 +117,14 @@ diri   = "/g/data/gv90/wrh581/"
 
 
 ;add coords
-  osic@lat2d  = fi[0]->latitude
-  osic@lon2d  = fi[0]->longitude
+  osic@lat2d  = fi[0]->lat;itude
+  osic@lon2d  = fi[0]->lon;gitude
 
+
+;correct units
+  if (max(osic).eq.100.) then
+     osic = osic/100.
+  end if
 
 
 ;******************
