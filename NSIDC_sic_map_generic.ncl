@@ -6,12 +6,12 @@
 begin
 
 
-  isAni  = True
+  isAni  = False
   isAnom = True   ;plot SIC as anom or abs value
   latmax = -54.
 
-  stdat  = 202209   ;start date (YYYYMM)  
-  endat  = 202504;;  ;end date (YYYYMM) 
+  stdat  = 202502   ;start date (YYYYMM)  
+  endat  = 202502;;  ;end date (YYYYMM) 
   
   ;climatology start and end dates [2004-2018 is the ARGO climatology)
   clst   = 1979
@@ -27,7 +27,7 @@ begin
 
 
 ;plot file
-  dirp  = "plots/"
+  dirp  = "/g/data/jk72/wrh581/Obs-seaice-analysis/plots/"
   filp  = "NSIDC_cdr_map_"+stdat+"-"+endat
   pType = "png"
   if (isAni) then
