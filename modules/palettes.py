@@ -17,7 +17,7 @@ class _palette:
 
 
 def _to_colourmap(hex):
-    rgb = [_mcolors.to_rgb(c) for c in hex]
+    rgb = [_mcolors.to_rgba(c) for c in hex]
     map = _mcolors.LinearSegmentedColormap.from_list("custom_cmap", rgb)
     return map
 
@@ -45,8 +45,10 @@ _sailnity_anomalies = [
 
 sailnity = _palette(anomalies=_to_colourmap(_sailnity_anomalies), absolute=_cm.haline)
 
-# From the PolarWatch scale (just colourpicking the colourbar)
-_sea_ice_absolute = ["#040613", "#3c4185", "#4177b6", "#7ec1d1", "#f4ffff"]
+# _sea_ice_absolute = ["#040613", "#3c4185", "#4177b6", "#7ec1d1", "#f4ffff"]
+# Use transparency
+_sea_ice_absolute = ["#FFFFFF00", "#FFFFFFFF"]
+
 _sea_ice_anomalies = [
     "#b35806",
     "#e08214",
