@@ -1,8 +1,8 @@
-import matplotlib.colors as mcolors
-import cmocean
+import matplotlib.colors as _mcolors
+import cmocean.cm as _cm
 
 
-class palette:
+class _palette:
     """
     Create a palette for a variable with anomaly and absolute variants.
 
@@ -16,21 +16,21 @@ class palette:
             self.absolute = absolute
 
 
-def to_colourmap(hex):
-    rgb = [mcolors.to_rgb(c) for c in hex]
-    map = mcolors.LinearSegmentedColormap.from_list("custom_cmap", rgb)
+def _to_colourmap(hex):
+    rgb = [_mcolors.to_rgb(c) for c in hex]
+    map = _mcolors.LinearSegmentedColormap.from_list("custom_cmap", rgb)
     return map
 
 
 # Define hex colors
 # ColourBrewer RdYlBu but without the Yl
-temperature_colours = ["#d73027", "#f46d43", "#ffffff", "#74add1", "#4575b4"]
-temperature = palette(to_colourmap(temperature_colours), absolute=cmocean.cm.thermal)
+_temperature_colours = ["#d73027", "#f46d43", "#ffffff", "#74add1", "#4575b4"]
+
+temperature = _palette(_to_colourmap(_temperature_colours), absolute=_cm.thermal)
 
 
-temperature.absolute.__str__
 # ColourBrewer BrBG
-sailnity_anomalies = [
+_sailnity_anomalies = [
     "#8c510a",
     "#bf812d",
     "#dfc27d",
@@ -43,14 +43,11 @@ sailnity_anomalies = [
 ]
 
 
-sailnity = palette(
-    anomalies=to_colourmap(sailnity_anomalies), absolute=cmocean.cm.haline
-)
+sailnity = _palette(anomalies=_to_colourmap(_sailnity_anomalies), absolute=_cm.haline)
 
 # From the PolarWatch scale (just colourpicking the colourbar)
-sea_ice_absolute = ["#040613", "#3c4185", "#4177b6", "#7ec1d1", "#f4ffff"]
-
-sea_ice_anomalies = [
+_sea_ice_absolute = ["#040613", "#3c4185", "#4177b6", "#7ec1d1", "#f4ffff"]
+_sea_ice_anomalies = [
     "#b35806",
     "#e08214",
     "#fdb863",
@@ -61,6 +58,8 @@ sea_ice_anomalies = [
     "#8073ac",
     "#542788",
 ]
-sea_ice = palette(
-    anomalies=to_colourmap(sea_ice_anomalies), absolute=to_colourmap(sea_ice_absolute)
+
+sea_ice = _palette(
+    anomalies=_to_colourmap(_sea_ice_anomalies),
+    absolute=_to_colourmap(_sea_ice_absolute),
 )
