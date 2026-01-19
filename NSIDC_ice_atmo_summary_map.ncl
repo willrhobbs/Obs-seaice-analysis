@@ -13,7 +13,7 @@ begin
   latmin = -90.
 
   stdat  = 202302   ;start date (YYYYMM)  
-  endat  = 202508 ;;  ;end date (YYYYMM) 
+  endat  = 202512 ;;  ;end date (YYYYMM) 
   
   ;climatology start and end dates [2004-2018 is the ARGO climatology)
   clst   = 1979
@@ -21,14 +21,16 @@ begin
 
 diri   = "/g/data/gv90/wrh581/"
 ;Obs data ice data
-  isrc = "OSISAF"
-  diroi = diri+isrc+"/"; monthly_sic/"
-  filoi = systemfunc("ls "+diroi+"ice_conc_sh_ease2-250_*.nc")
+  isrc = "NSIDC" ; "OSISAF"
 
-;  filoi = diroi+"sic_pss25_"+array_append_record("197811-202412_v05r00.nc",\
+diroi = diri+isrc+"/"+"monthly_sic/"; 
+;  filoi = systemfunc("ls "+diroi+"ice_conc_sh_ease2-250_*.nc")
+
+filoi = diroi+"sic_pss25_197811-202512_v06r00.nc"
+;  filoi = diroi+"sic_pss25_"+array_append_record("197811-202412_v06r00.nc",\
 ; "2025"+sprinti("%0.2i",ispan(1,endat%100,1))+"_F17_icdr_v03r00.nc" ,0)
   
- oiNam = "ice_conc" ;"cdr_seaice_conc_monthly"
+ oiNam = "cdr_seaice_conc_monthly" ;"ice_conc" ;
 
 
 ;atmo data
@@ -36,8 +38,8 @@ diri   = "/g/data/gv90/wrh581/"
   asrc  = "ERA5"
 
   dira  = diri+asrc+"/"
-  filoa = (/asrc+"_msl_monthly_SH_1979-2024.nc"\
-           ,asrc+"_msl_monthly_SH_2025.nc"/)
+  filoa = (/asrc+"_msl_monthly_SH_1979-2025.nc"/) ;\
+    ;       ,asrc+"_msl_monthly_SH_2025.nc"/)
 
 
 
@@ -86,7 +88,7 @@ diri   = "/g/data/gv90/wrh581/"
   ;read data
   tmp   = fi[:]->$oiNam$ ;(time,ygrid,xgrid)
 
-   if (isbyte(tmp)) then
+   if (isbyte(tmp).or.isubyte(tmp)) then
       tmp  := byte2flt(tmp)
    end if 
 
@@ -106,14 +108,14 @@ diri   = "/g/data/gv90/wrh581/"
   dimz          = dimsizes(tmp(0,:,:))
   osic          = new((/3,nmon,dimz(0),dimz(1)/), typeof(tmp))
   osic(1,:,:,:) = tmp({stdat:endat},:,:)   ;anomaly period
-  
+
+
 ;climatology
   mInd = stdat%100
 
   do i = 0, nmon-1
 
-    ;OSISAF doesn't have a monthly mean for Dec 1987 (sensibly) so get correct time indeces else 
-    ;climatology is biased
+    ;OSISAF doesn't have a monthly mean for Dec 1987 (sensibly) so get correct time indices else climatology is biased
     clInd := ind(time%100.eq.mInd.and.time/100.ge.clst.and.time/100.le.clen)
     osic(0,i,:,:) = dim_avg_n(tmp(clInd,:,:),0)
 
@@ -131,8 +133,8 @@ diri   = "/g/data/gv90/wrh581/"
 
 
 ;add coords
-  osic@lat2d  = fi[0]->lat;itude
-  osic@lon2d  = fi[0]->lon;gitude
+  osic@lat2d  = fi[0]->latitude
+  osic@lon2d  = fi[0]->longitude
 
 
 ;******************

@@ -10,13 +10,13 @@ begin
   clst = 1979  ;climatology end
   clen = 2018  ;climatology start
 
-  month = "FEB" ;month to plot (string). 
+  month = "ALL" ;month to plot (string). 
             ;For all months, 'ALL', 
             ;'ANN" for annual-mean
             ;otherwies 3-letter season name (ASO) or  month (JAN, FEB)       ;
 
   diri = "/g/data/gv90/wrh581/NSIDC/"
-  fili = "NSIDC_SH_totalSIA_monthly_"+(/"v05r00.nc","v03r00.nc"/);(/"v04r00.nc","v02r00.nc"/)
+  fili = "NSIDC_SH_totalSIA_monthly_"+(/"v06r00.nc"/);,"v05r00.nc"/);
   iNam = "SIA_cdr"
 
   diro = "plots/"
@@ -112,13 +112,13 @@ begin
   ;  SIA := SIA({yrst*100+1:yren*100+12} )
   end if
 
-printMinMax(SIA&time, True)
+;printMinMax(SIA&time, True)
 
 ;print years ranked in order 
-SIA({1988}) = SIA@_FillValue
-pq = dim_pqsort(SIA, 1)
-print(SIA&time(pq))
-exit
+;SIA({1988}) = SIA@_FillValue
+;pq = dim_pqsort(SIA, 1)
+;print(SIA&time(pq))
+;exit
 
 ;*********************
 ;plot anoms
