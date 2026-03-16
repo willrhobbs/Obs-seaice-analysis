@@ -13,7 +13,7 @@ begin
   latmin = -90.
 
   stdat  = 202302   ;start date (YYYYMM)  
-  endat  = 202512 ;;  ;end date (YYYYMM) 
+  endat  = 202602 ;;  ;end date (YYYYMM) 
   
   ;climatology start and end dates [2004-2018 is the ARGO climatology)
   clst   = 1979
@@ -26,9 +26,9 @@ diri   = "/g/data/gv90/wrh581/"
 diroi = diri+isrc+"/"+"monthly_sic/"; 
 ;  filoi = systemfunc("ls "+diroi+"ice_conc_sh_ease2-250_*.nc")
 
-filoi = diroi+"sic_pss25_197811-202512_v06r00.nc"
-;  filoi = diroi+"sic_pss25_"+array_append_record("197811-202412_v06r00.nc",\
-; "2025"+sprinti("%0.2i",ispan(1,endat%100,1))+"_F17_icdr_v03r00.nc" ,0)
+
+filoi = diroi+"sic_pss25_"+array_append_record("197811-202512_v06r00.nc",\
+ "2026"+sprinti("%0.2i",ispan(1,endat%100,1))+"_am2_icdr_v04r00.nc" ,0)
   
  oiNam = "cdr_seaice_conc_monthly" ;"ice_conc" ;
 
@@ -38,8 +38,8 @@ filoi = diroi+"sic_pss25_197811-202512_v06r00.nc"
   asrc  = "ERA5"
 
   dira  = diri+asrc+"/"
-  filoa = (/asrc+"_msl_monthly_SH_1979-2025.nc"/) ;\
-    ;       ,asrc+"_msl_monthly_SH_2025.nc"/)
+  filoa = (/asrc+"_msl_monthly_SH_1979-2025.nc"\
+           ,asrc+"_msl_monthly_SH_2026.nc"/)
 
 
 

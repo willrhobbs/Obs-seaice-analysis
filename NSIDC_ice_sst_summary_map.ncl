@@ -12,7 +12,7 @@ begin
 
 
   stdat  = 202302   ;start date (YYYYMM)  
-  endat  = 202512 ;;  ;end date (YYYYMM) 
+  endat  = 202602 ;;  ;end date (YYYYMM) 
   
   ;climatology start and end dates [2004-2018 is the ARGO climatology)
   clst   = 1982
@@ -25,9 +25,9 @@ begin
   diroi = dirb+isrc+"/monthly_sic/"
 ;  filoi = systemfunc("ls "+diroi+"ice_conc_sh_ease2-250_*.nc")
 
-filoi = diroi+"sic_pss25_197811-202512_v06r00.nc"
-;  filoi = diroi+"sic_pss25_"+array_append_record("197811-202412_v05r00.nc",\
-; "2025"+sprinti("%0.2i",ispan(1,endat%100,1))+"_F17_icdr_v03r00.nc" ,0)
+
+filoi = diroi+"sic_pss25_"+array_append_record("197811-202512_v06r00.nc",\
+ "2026"+sprinti("%0.2i",ispan(1,endat%100,1))+"_am2_icdr_v04r00.nc" ,0)
   
  oiNam ="cdr_seaice_conc_monthly" ; "ice_conc" ; 
 
@@ -36,7 +36,7 @@ filoi = diroi+"sic_pss25_197811-202512_v06r00.nc"
   oNam  = "sst"
   osrc  = "OISSTv2"
   diro  = dirb+"/OISST/"
-  filo  = "OIv2_SST_"+(/"1982-2025"/)+".nc"
+  filo  = "OIv2_SST_1982-2026.nc"
 
 
 ;plot file

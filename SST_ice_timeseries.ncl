@@ -16,13 +16,13 @@ begin
   clen = 2008
 
   yrst = 1982
-  yren = 2024
+  yren = 2026
 
 ;SST data
   oNam  = "sst"
   osrc  = "OISSTv2"
   diro  = "/g/data/gv90/wrh581/OISST/"
-  filo  = "OIv2_SST_1982-2025.nc"
+  filo  = "OIv2_SST_1982-2026.nc"
 
 
 
@@ -30,7 +30,7 @@ begin
   refyear = (/2023/)  ;years to highlight
 
   diri = "/g/data/gv90/wrh581/NSIDC/"
-  fili = "NSIDC_SH_totalSIA_monthly_"+(/"v05r00.nc","v03r00.nc"/)
+  fili = "NSIDC_SH_totalSIA_monthly_"+(/"v06r00.nc","v04r00.nc"/)
   iNam = "SIE_cdr"
 
 ;output
@@ -167,7 +167,7 @@ resSST@trYMinF              = -resSST@trYMaxF
 resSIE                  = True
 resSIE@gsnDraw          = False
 resSIE@gsnFrame         = False
-resSIE@xyLineThicknessF = 5.
+resSIE@xyLineThicknessF = 7.
 resSIE@xyLineColor      = "black"
 resSIE@tiYAxisString    = "SIA anomaly (10~S~6~N~ km~S~2~N~)"
 ;resSIE@gsnRightAxis     = True

@@ -6,7 +6,7 @@ load "ncl_funcs.ncl"
 begin
 
   yrst = 1979
-  yren = 2025
+  yren = 2026
   clst = 1979  ;climatology end
   clen = 2018  ;climatology start
 
@@ -16,7 +16,7 @@ begin
             ;otherwies 3-letter season name (ASO) or  month (JAN, FEB)       ;
 
   diri = "/g/data/gv90/wrh581/NSIDC/"
-  fili = "NSIDC_SH_totalSIA_monthly_"+(/"v06r00.nc"/);,"v05r00.nc"/);
+  fili = "NSIDC_SH_totalSIA_monthly_"+(/"v06r00.nc","v04r00.nc"/);
   iNam = "SIA_cdr"
 
   diro = "plots/"

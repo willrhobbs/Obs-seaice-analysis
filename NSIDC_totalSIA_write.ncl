@@ -6,7 +6,7 @@ begin
 
   tstep   = "monthly"  ;"daily"
 ;year =     ; only used for daily data
-  version = "v06r00" ; "v05r00"
+  version = "v04r00" ; "v06r00"
 
 ;  hemi    = "S"  ;S or N
  
@@ -38,7 +38,6 @@ begin
   ;   fili = systemfunc("ls "+diri+"seaice_conc_"+tstep+"_*sh_*_"+version+".nc")
      fili = systemfunc("ls "+diri+"monthly_sic/sic_ps"+str_lower(hemi)+"25_*_"+version+".nc")
   end if
-
 
 
   fi   = addfiles(fili,"r")
