@@ -5,8 +5,8 @@ load "ncl_funcs.ncl"
 
 begin
 
-  yrst = 1980
-  yren = 2024
+  yrst = 2006
+  yren = 2025
 
 
   seas = "MJJ" ;season name 
@@ -16,19 +16,19 @@ begin
 ;  xmin = (/0.,150.,327.,277./)
 ;  xmax = (/360.,270.,90.,295./)
 
-  sNam = (/"Weddell", "Bellingshausen"/)
-  xmin = (/327., 277./)
-  xmax = (/10., 295./)
+  sNam = (/"E. hemi"/);"Weddell", "Bellingshausen"/)
+  xmin = (/330./);, 277./)
+  xmax = (/90./);, 295./)
 
 
 
   diri = "/g/data/gv90/wrh581/NSIDC/"
-  fili = "NSIDC_SH_icearea_"+(/"v05r00_197811-202412.nc",\
-         "v03r00_202501-202505.nc"/)
+  fili = "NSIDC_SH_icearea_"+(/"v06r00_197811-202512.nc"/);,\
+  ;       "v03r00_202501-202505.nc"/)
   iNam = "SIA"
 
-  diro  = "plots/"
-  filo  = "NSIDC_"+iNam+"_sector_"+seas
+  diro  = "~/gd/Southern-Ocean-ice-potential/plots/"
+  filo  = "NSIDC_"+iNam+"_Ehemi_"+seas
   oType = "png"
 
 
