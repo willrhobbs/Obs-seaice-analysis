@@ -11,13 +11,13 @@ import cf_xarray as cf
 import numpy as np
 import glob
 import os
+import intake
+import pandas as pd
 
 
-# In[82]:
 
-
-def ocean_read(src: str, expt: 'obs', var: str, start_year: int, end_year: int, 
-               latmin = -90, latmax = 90, zmin = 0., zmax = 6000., freq = '1mon', chunking = -1):
+def ocean_read(src: str, var: str,  start_year: int, end_year: int, 
+               latmin = -90, latmax = 90, zmin = 0., zmax = 6000., expt = 'obs', freq = '1mon',chunking = -1):
 
     yrstring = [str(yr) for yr in  np.arange(start_year,end_year+1) ]        #string list of years
     
@@ -25,82 +25,123 @@ def ocean_read(src: str, expt: 'obs', var: str, start_year: int, end_year: int,
     if (src == 'ACCESS-OM2'):
 
         import intake
-
         catalog = intake.cat.access_nri.search(model = src,
                                               variable = var,
-                                               frequency = freq
-                                              )
-        #get filepaths from intake catalog
-        pattern = catalog[expt].search(variable = var).df['path']     
+                                              frequency = freq)
 
-        if freq == 'fx':    #time-fixed variables
+        pattern = catalog[expt].search(variable = var).df['path']     #get filepaths from intake catalog
+        if freq == 'fx':
             fpath = pattern[0]
         else:
-            #restrict filepath to years of interest
-            fpath = sorted([f for f in pattern if any(yr in f for yr in yrstring)])
+            fpath = sorted([f for f in pattern if any(yr in f for yr in yrstring)])  #restric filepath to years of interest
 
     else:
         diri = '/g/data/gv90/wrh581/'+src+'/'
         if src == 'EN4':
             pattern = os.path.join(diri, f"EN.4.2.2.?.analysis.l09.*.nc")
-        elif src == 'ORAS5':
-            pattern = os.path.join(diri+var, f"ORAS5_{var}_monthly_SOcean_*.nc")
-        
+        elif src == 'IAP':
+            pattern = os.path.join(diri+var, f"{src}*_{var.capitalize()}_monthly_*.nc")
+        else:
+            pattern = os.path.join(diri+var, f"{src}*_{var}_monthly_*.nc")
+            
         fpath = sorted([f for f in glob.glob(pattern) if any(yr in f for yr in yrstring)])
     
 
-
-    #preprocess/spatial selection
-
-        
-    #set up preprocess
+    #preprocess
     if src == 'ORAS5':   #needs "special" treatment
 
-        def _selection(ds):
+        def _preprocess(ds):
             da = ds[var].isel(x = slice(0,1440))  # ORAS5 seems to have extra lon points/wraparounds
-                    
-            #vertical selection
-            da = da.sel(deptht = slice(zmin, zmax))
-    
-            #meridional selection (noting that ORAS has 2-d lat/lon coords
-            if (latmax - latmin) < 180.:
-                lat = da.nav_lat.compute()
-                da = da.where((lat >= latmin) & 
-                              (lat >= latmax), drop = True)
-    
-            return da
+            return da 
+            
+    elif src == 'IAP':
+                      
+        def _preprocess(ds: xr.Dataset) -> xr.Dataset: 
+            dt_time = pd.to_datetime(ds['time'].values, format = "%Y%m") 
+            ds = ds.assign_coords(time = dt_time)
+            return ds
 
-        
     else:
- 
-        if freq == 'fx':  #only really the case for fx fields
+        _preprocess = None
 
-            out = xr.open_dataset(fpath,decode_timedelta=False)[var]
-            dims = out.dims
+    out = xr.open_mfdataset(fpath,preprocess = _preprocess, chunks = chunking, parallel=False, data_vars = 'minimal', decode_timedelta=False)[var]
+    if src == 'IAP': 
+        out = out.chunk(chunking)
 
-            if len(dims) == 3:
-                    space_range = {dims[0] : slice(zmin, zmax),
-                               dims[1] : slice(latmin, latmax)}
-            if len(dims) == 2:
-                    space_range = {dims[0] : slice(latmin, latmax)}
-            
-            out = out.sel(**space_range)
-            
+        
+    #spatial selection
+
+
+   # Depth selection (lazy) ----
+    for zname in ("depth", "deptht", "st_ocean", "depth_std"):
+        if zname in out.coords or zname in out.dims:
+            out = out.sel({zname: slice(zmin, zmax)})
+            break
+
+    #latitude selection
+    
+    # ---- Latitude selection: 1D slice or 2D mask 
+
+
+    # Fallback to known coordinate names
+    def find_latname(da):
+        for name in ["lat", "latitude", "yt_ocean", "nav_lat"]:
+            if name in da.coords:
+                return name
+
+    latname = find_latname(out)
+    if latname and (latmax - latmin) < 180.0:
+        latc = out[latname]
+        if latc.ndim == 1:
+            out = out.sel({latname: slice(latmin, latmax)})
         else:
-        
-            def _selection(ds): 
-                dims = xr.open_dataset(fpath[0], decode_timedelta=False)[var].dims
+            latmask = (latc >= latmin) & (latc <= latmax) 
+            
+            # Reduce mask to 1-D keepers (still lazy)
+            y_keep = latmask.any(dim='x').compute()
+            x_keep = latmask.any(dim='y').compute()
+            
+            # Subset using indexers (small, in-memory boolean arrays)
+            out = out.isel(y=y_keep, x=x_keep)
+
     
-                if len(dims) == 4:
-                    space_range = {dims[1] : slice(zmin, zmax),
-                               dims[2] : slice(latmin, latmax)}
-                if len(dims) == 3:
-                    space_range = {dims[1] : slice(latmin, latmax)}
-                
-                da = ds[var].sel(**space_range)
-                return da
-    
-            out = xr.open_mfdataset(fpath,preprocess = _selection, decode_timedelta=False, chunks = chunking, parallel=True)[var]
-        
     return out
 
+##################################################
+
+###currently only works for OM2
+
+def ice_read(src: str, expt: 'obs', var, start_year: int, end_year: int, latmax = -45., chunking = -1):
+
+    yrstring = [str(yr) for yr in  np.arange(start_year,end_year+1) ]        #string list of years
+    
+    import intake
+    catalog = intake.cat.access_nri.search(model = src,
+                                          variable = var,
+                                          frequency = '1mon')
+    
+    pattern = catalog[expt].search(variable = var).df['path']     #get filepaths from intake catalog
+    fpath = sorted([f for f in pattern if any(yr in f for yr in yrstring)])  #restric filepath to years of interest
+    
+    xr.set_options(use_new_combine_kwarg_defaults=True)
+    data = xr.open_mfdataset(fpath, data_vars = [var], parallel = True)[var]
+    
+    #correct time array
+    import datetime as dt
+    data['time'] = data.time.to_pandas() - dt.timedelta(hours=12)
+    
+    #add 1-d coords and select    
+    catalog = intake.cat.access_nri.search(model = 'ACCESS-OM2', variable ='area_t')
+    path = catalog[expt].search(variable = 'area_t').df['path'][0] 
+    A = xr.open_dataset(path)['area_t']
+    
+    iNams = data.dims[1:] ; oNams = A.dims
+    
+    for i in [0,1]:
+        data.coords[iNams[i]] = A[oNams[i]].values
+        
+    data = data.rename(({iNams[0]:oNams[0], 
+                         iNams[1]:oNams[1]}))
+
+
+    return data.sel(**{oNams[0] :slice(-90, latmax)}) 
