@@ -111,14 +111,9 @@ begin
   print("regridding")
 
 
-  if (version.eq."v02r00") then
-    ftmp  = systemfunc("ls "+diri+"seaice_conc_monthly_sh_197811_??????_v04r00.nc")
+  if (version.eq."v04r00") then
+    ftmp  = systemfunc("ls "+diri+"monthly_sic/sic_pss25_197811-??????_v06r00.nc")
     ftmp := addfile(ftmp,"r")
-    lat2d = ftmp->latitude
-    lon2d = ftmp->longitude 
-  elseif (version.eq."v03r00") then
-    ftmp  = systemfunc("ls "+diri+"monthly_sic/sic_pss25_*_v05r00.nc")
-    ftmp := addfile(ftmp(0),"r")
     lat2d = ftmp->latitude
     lon2d = ftmp->longitude 
   else 

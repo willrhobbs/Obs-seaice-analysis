@@ -5,30 +5,32 @@ load "ncl_funcs.ncl"
 
 begin
 
-  yrst = 2006
-  yren = 2025
+  yrst = 1979
+  yren = 2026
 
 
-  seas = "MJJ" ;season name 
-
+  month = "MAY" ;month to plot (string). 
+            ;For all months, 'ALL', 
+            ;'ANN" for annual-mean
+            ;otherwies 3-letter season name (ASO) or  month (JAN, FEB)       ;
 
 ;  sNam = (/"Circum","Ross-Am","Weddell-KH","Bell"/)
 ;  xmin = (/0.,150.,327.,277./)
 ;  xmax = (/360.,270.,90.,295./)
 
-  sNam = (/"E. hemi"/);"Weddell", "Bellingshausen"/)
-  xmin = (/330./);, 277./)
-  xmax = (/90./);, 295./)
+  sNam = "Bellingshausen";(/"E. hemi"/);"Weddell", /)
+  xmin = 277.; (/330./);, 277./)
+  xmax = 295. ; (/90./);, 295./)
 
 
 
   diri = "/g/data/gv90/wrh581/NSIDC/"
-  fili = "NSIDC_SH_icearea_"+(/"v06r00_197811-202512.nc"/);,\
-  ;       "v03r00_202501-202505.nc"/)
+  fili = "NSIDC_SH_icearea_"+(/"v06r00_197811-202512.nc",\
+         "v04r00_202601-202605.nc"/)
   iNam = "SIA"
 
-  diro  = "~/gd/Southern-Ocean-ice-potential/plots/"
-  filo  = "NSIDC_"+iNam+"_Ehemi_"+seas
+  diro  = "~/gd/Obs-seaice-analysis/plots/"
+  filo  = "NSIDC_"+iNam+"_Ehemi_"+month
   oType = "png"
 
 
@@ -64,16 +66,78 @@ begin
    end if
  end do
 
-;get seasonal mean
- SIA := SIAsec(lon|:,time|::12)
-
- do i = 0, nsec-1
-   SIA(i,:) = (/month_to_seasonN(SIAsec(:,i),seas)/)
- end do
 
 
+;seasonal/monthly mean
+
+ if (any(monref.eq.month)) then
+    ;read individual month
+    mInd = ind(monref.eq.month)+1
+    st   = yrst*100+mInd
+    en   = yren*100+mInd
+
+    SIAsec   := SIAsec({st:en:12},:)
+    SIAsec&time = SIAsec&time/100 ;convert to year  
+
+  elseif (month.eq."ANN") then
 
 
+    tmp      = SIAsec({yr1*100+1:y2*100+12},:)
+    SIAsec      = new(yrst-yren+1,typeof(tmp))
+    SIAsec!0    = "time"
+    SIAsec&time = ispan(yr1,yr2,1)
+
+      do yy = yrst, yren
+         ii := ind(YYYYMM/100.eq.yy)
+         if (dimsizes(ii).lt.12) then
+            continue
+          end if
+          SIAsec({yy},:) = dim_avg_n(tmp(ii,:),0)
+       end do 
+    
+
+  else
+    st       = yrst*100+1
+    en       = yren*100+12
+
+      ;convert time array to year
+    if (any(seasref.eq.month)) then  ;seasonl mean
+
+    ;get 3-month seasons
+
+        ;pad final year
+      enmon  = max(SIAsec&time)%100
+      if (enmon.ne.12) then 
+        SIAsec := array_append_record(SIAsec, new(12-enmon, typeof(SIAsec)),0)
+        SIAsec&time := yyyymm_time(yr1, yr2, "integer") 
+      end if
+      
+      SIAsec     := month_to_season(SIAsec, month)
+
+      SIAsec&time = SIAsec&time/100
+
+      SIAsec      := SIAsec({yrst:yren})
+
+    else 
+      clim = new((/12,nsec/),typeof(SIAsec))
+    
+      do m = 1, 12
+        clim(m-1,:) = dim_avg_n(SIAsec({clst*100+m:clen*100+m:12}), 0) 
+        SIAsec({yrst*100+m::12},:) = SIAsec({yrst*100+m::12},:) - clim(m-1)
+      end do
+    end if
+
+
+  end if
+
+
+SIAsec = 1.e3 *SIAsec
+print(SIAsec({2023:2026},0))
+print(avg(SIAsec({1979:2018},0)))
+print(stddev(SIAsec({1979:2018},0)))
+
+
+exit
 ;*******************
 ;plot
 ;*************************
@@ -90,7 +154,7 @@ begin
 
   res@tiYAxisString        = "SIA (10~S~6~N~ km~S~2~N~)"
   if (nsec.eq.1) then
-    res@gsnYRefLine          = avg(SIA)
+    res@gsnYRefLine          = avg(SIAsec)
   else
     res@gsnYRefLine          = 0.
     SIA = dim_rmvmean(SIA)
@@ -107,8 +171,8 @@ begin
   res@trXMinF              = yrst
   res@trXMaxF              = yren+1
 
-  res@tiMainString = seas+" SIA "
-  plot = gsn_csm_xy(wks, ispan(yrst,yren,1), SIA,  res)
+  res@tiMainString = month+" SIA "
+  plot = gsn_csm_xy(wks, SIAsec&time, SIAsec(lon|:, time|:),  res)
 
 
 
