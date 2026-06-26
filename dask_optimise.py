@@ -3,6 +3,7 @@
 import os
 import multiprocessing
 import psutil
+import dask
 
 def get_available_resources():
     """Detect CPU, memory, and scratch space available to this job."""
@@ -60,33 +61,28 @@ def _parse_mem_string(s):
 
 ##################################################
 #compute optimal Dask settings from availavble resources
-def get_dask_config(memory_fraction=0.75,
-                    threads_per_worker=2,
-                    spill_fraction=0.70, 
-                    target_fraction=0.60
-                   ):
-    """
-    Compute optimal Dask LocalCluster settings for the current job allocation.
-    
-    Args:
-        memory_fraction: Fraction of job memory to give Dask (leave headroom
-                         for your non-Dask code, OS, etc.)
-        threads_per_worker: Threads per worker. 
-                            - Pure Python / GIL-bound → 1
-                            - NumPy/Pandas/C extensions → 2–4
-                            - IO-heavy workloads → 4+
-    """
+def get_dask_config(memory_fraction=0.75, threads_per_worker=2, allow_spill=False):
     ncpus, mem_bytes, scratch, _ = get_available_resources()
 
     n_workers = max(1, ncpus // threads_per_worker)
-    total_dask_mem = int(mem_bytes * memory_fraction)
-    memory_per_worker = total_dask_mem // n_workers
+    memory_per_worker = int(mem_bytes * memory_fraction) // n_workers
 
-    return {
+    dask.config.set({
+        "distributed.worker.memory.target": 0.60,
+        "distributed.worker.memory.spill": 0.95 if not allow_spill else 0.70,
+        "distributed.worker.memory.pause": 0.80,
+        "distributed.worker.memory.terminate": 0.90,
+    })
+
+    config = {
         "n_workers": n_workers,
         "threads_per_worker": threads_per_worker,
         "memory_limit": memory_per_worker,
-        "local_directory": scratch,  # spill to jobFS, not /tmp
     }
+
+    if allow_spill:
+        config["local_directory"] = scratch
+
+    return config
 
 # 

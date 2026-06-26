@@ -17,7 +17,7 @@ import pandas as pd
 
 
 def ocean_read(src: str, var: str,  start_year: int, end_year: int, 
-               latmin = -90, latmax = 90, zmin = 0., zmax = 6000., expt = 'obs', freq = '1mon',chunking = -1):
+               latmin = -90, latmax = 90, zmin = 0., zmax = 6000., expt = 'obs', freq = '1mon',chunking = [12,-1,-1,-1]):
 
     yrstring = [str(yr) for yr in  np.arange(start_year,end_year+1) ]        #string list of years
     
@@ -64,11 +64,11 @@ def ocean_read(src: str, var: str,  start_year: int, end_year: int,
     else:
         _preprocess = None
 
-    out = xr.open_mfdataset(fpath,preprocess = _preprocess, chunks = chunking, parallel=False, data_vars = 'minimal', decode_timedelta=False)[var]
-    if src == 'IAP': 
-        out = out.chunk(chunking)
-
         
+    out = xr.open_mfdataset(fpath,preprocess = _preprocess, chunks = {}, parallel=True, data_vars = 'minimal', decode_timedelta=False)[var]
+
+    
+    
     #spatial selection
 
 
@@ -104,6 +104,10 @@ def ocean_read(src: str, var: str,  start_year: int, end_year: int,
             # Subset using indexers (small, in-memory boolean arrays)
             out = out.isel(y=y_keep, x=x_keep)
 
+    #chunking
+    out = out.chunk(dict(zip(out.dims,  chunking)))
+    # if src == 'IAP': 
+    #     out = out.chunk(chunking)
     
     return out
 
