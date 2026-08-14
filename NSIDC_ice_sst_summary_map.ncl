@@ -12,7 +12,7 @@ begin
 
 
   stdat  = 202302   ;start date (YYYYMM)  
- ; endat  = 202604 ;;  ;end date (YYYYMM) 
+;  endat  = 202606 ;;  ;end date (YYYYMM) 
   
   ;climatology start and end dates [2004-2018 is the ARGO climatology)
   clst   = 1982
@@ -188,7 +188,7 @@ filoi = diroi+"sic_pss25_"+array_append_record("197811-202605_v06r00.nc",\
   res@cnFillMode             = "RasterFill" ;Raster fill necessary for high-res
   res@cnLevelSelectionMode   = "ManualLevels"
   res@lbLabelBarOn           = True
-  res@lbTitleString       = "Monthly SST Anomaly (degree C) from OISST data"   ; <-- THIS is the colorbar label
+  res@lbTitleString       = "Sea Surface Temperature Anomaly (~S~o~N~C)"; from OISST data"   ; <-- THIS is the colorbar label
   res@lbTitleFontHeightF  = 0.015
   res@lbTitlePosition     = "Bottom"
   res@cnInfoLabelOn          = False

@@ -6,13 +6,13 @@ load "ncl_funcs.ncl"
 begin
 
   yrst = 1979
-  yren = 2025
+  yren = 2026
   clst = 1979  ;climatology end
   clen = 2018  ;climatology start
 
 ;refyear = yren
 
-  refyear = (/2023, 2024/)  ;years to highlight
+  refyear = (/2026/)  ;years to highlight
 
   diri = "/g/data/gv90/wrh581/NSIDC/"
   fili = "NSIDC_SH_totalSIA_monthly_"+(/"v06r00.nc","v04r00.nc"/)
@@ -67,9 +67,9 @@ begin
 
 sd = dim_stddev_n(SIA_ym({clst:clen},:), 0)
 ;print(sd)
-print(SIA_ym({2023},:))
-print(SIA_ym({2023},:)/sd)
-exit
+;print(SIA_ym({2023},:))
+;print(SIA_ym({2023},:)/sd)
+;exit
 
 ;*********************
 ;plot anoms

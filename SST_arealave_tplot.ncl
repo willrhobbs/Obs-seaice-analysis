@@ -18,7 +18,7 @@ begin
   oNam  = "sst"
   osrc  = "OISSTv2"
   diro  = "/g/data/gv90/wrh581/OISST/"
-  filo  = "OIv2_SST_1982-2025.nc"
+  filo  = "OIv2_SST_1982-2026.nc"
 
 ;output
   dirp  = "plots/"
@@ -85,8 +85,8 @@ begin
   res@gsnBelowYRefLineColor = "deepskyblue"
   res@gsnAboveYRefLineColor = "orangered"
  
-  res@tiMainString          = osrc
-  res@gsnRightString        = "(clim = "+clst+"-"+clen+")"
+  res@tiMainString          = "osrc" ; "Southern Ocean surface temperature" ;
+  res@gsnRightString        = (clim = "+clst+"-"+clen+")"
   res@gsnLeftString         = lonmin+"-"+lonmax+"~S~o~N~E : "+latmin+"-"+latmax+"~S~o~N~N"
 
   yrst = sst&time(0)/100
@@ -100,8 +100,15 @@ begin
   res@tmXBLabels      = ispan(1985,yren,5)
   res@tmXBMinorValues = ispan(min(ind(sst&time%100.eq.2)), res@trXMaxF,12)
 
+;res@gsnMaximize = True
+
   aplot = gsn_csm_xy(wks,ispan(1,dimsizes(sst),1),sst,res)
 
+
+
+;draw(aplot)
+;frame(wks)
+;exit
 
 ;map plot showing region
   resm = True
