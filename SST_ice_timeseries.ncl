@@ -35,7 +35,7 @@ begin
 
 ;output
   dirp  = "plots/"
-  filp  = osrc+"_sst_anom_SO_timeseries"
+  filp  = osrc+"_SIA_anom_SO_timeseries"
   pType = "png"
 
 
