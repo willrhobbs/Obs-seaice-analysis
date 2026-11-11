@@ -15,7 +15,7 @@ begin
 
 
   src  = "cdr"
-  ;version = "v02r00"
+  version = "v06r00"
   pole = "SH"
   diri  = "/g/data/gv90/wrh581/NSIDC/"
   
